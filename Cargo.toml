@@ -3,15 +3,14 @@ name = "lemurs"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.58"
-description = "Linux eBPF Metrics using Rust"
+description = "Linux eBPF Monitoring using Rust"
 homepage = "https://github.com/syscll/lemurs"
 repository = "https://github.com/syscll/lemurs"
 license = "GPL-3.0"
-keywords = ["linux", "ebpf", "metrics"]
+keywords = ["linux", "ebpf", "monitoring", "metrics"]
 readme = "README.md"
 
 [dependencies]
 nix = "0.23"
-log = "0.4"
-syslog = "6.0"
+clap = { version = "3.0", features = ["cargo"] }
 anyhow = "1.0"

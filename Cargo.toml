@@ -11,3 +11,7 @@ keywords = ["linux", "ebpf", "metrics"]
 readme = "README.md"
 
 [dependencies]
+nix = "0.23"
+log = "0.4"
+syslog = "6.0"
+anyhow = "1.0"

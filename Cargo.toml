@@ -12,5 +12,5 @@ readme = "README.md"
 
 [dependencies]
 nix = "0.23"
-clap = { version = "3.0", features = ["cargo"] }
+clap = { version = "3.0", default-features = false, features = ["cargo", "std"] }
 anyhow = "1.0"

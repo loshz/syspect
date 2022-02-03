@@ -1,0 +1,11 @@
+[Unit]
+Type=simple
+Description=Linux eBPF Monitoring daemon.
+ConditionFileIsExecutable=/usr/bin/lemurs
+
+[Service]
+ExecStart=/usr/bin/lemurs start
+TimeoutSec=10
+
+[Install]
+WantedBy=multi-user.target

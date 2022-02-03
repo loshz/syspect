@@ -4,20 +4,14 @@ use anyhow::Error;
 use nix::unistd::Uid;
 
 mod cli;
-
-use crate::cli::app;
+mod install;
+mod start;
 
 fn main() {
     // Check if running as root.
     if !Uid::effective().is_root() {
         eprintln!("service requires root permissions");
         process::exit(1);
-    }
-
-    match app().subcommand() {
-        Some(("install", _)) => println!("install"),
-        Some(("start", _)) => println!("run"),
-        _ => unreachable!("exhausted list of subcommands"),
     }
 
     // Run the service.
@@ -31,5 +25,9 @@ fn main() {
 }
 
 fn run() -> Result<(), Error> {
-    Ok(())
+    match cli::new().subcommand_name() {
+        Some(install::COMMAND_NAME) => install::run(),
+        Some(start::COMMAND_NAME) => start::run(),
+        _ => Err(Error::msg("exhausted list of subcommands".to_owned())),
+    }
 }

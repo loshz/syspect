@@ -23,14 +23,25 @@ const SERVICE_DEFAULT: &str = include_str!(concat!(
     "/config/lemurs.service"
 ));
 
-pub fn run(_args: &ArgMatches) -> Result<(), Error> {
+pub fn run(args: &ArgMatches) -> Result<(), Error> {
+    let mut conf_path = CONFIG_PATH;
+    let mut service_path = SERVICE_PATH;
+
+    // Parse args.
+    if let Some(p) = args.value_of("config") {
+        conf_path = p
+    }
+    if let Some(p) = args.value_of("service") {
+        service_path = p
+    }
+
     // Write config file.
-    write_file(CONFIG_PATH, CONFIG_DEFAULT).context("error writing config file")?;
-    println!("Default config saved to: {}", CONFIG_PATH);
+    write_file(conf_path, CONFIG_DEFAULT).context("error writing config file")?;
+    println!("Default config saved to: {}", conf_path);
 
     // Write systemd service file.
-    write_file(SERVICE_PATH, SERVICE_DEFAULT).context("error writing systemd service file")?;
-    println!("systemd service saved to: {}", SERVICE_PATH);
+    write_file(service_path, SERVICE_DEFAULT).context("error writing systemd service file")?;
+    println!("systemd service saved to: {}", service_path);
 
     Ok(())
 }

@@ -1,8 +1,23 @@
 use anyhow::Error;
+use clap::App;
 
-pub const COMMAND_NAME: &str = "start";
+/// The command name.
+const COMMAND_NAME: &str = "install";
 
-pub fn run() -> Result<(), Error> {
-    println!("{}", COMMAND_NAME);
-    Ok(())
+pub struct Command;
+
+impl Command {
+    pub fn new() -> Command {
+        Command {}
+    }
+}
+
+impl crate::cli::Command for Command {
+    fn app(&self) -> App<'static> {
+        App::new(COMMAND_NAME).about("Start the daemon.")
+    }
+    fn run(&self) -> Result<(), Error> {
+        println!("{}", COMMAND_NAME);
+        Ok(())
+    }
 }

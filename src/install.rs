@@ -2,9 +2,10 @@ use std::fs::File;
 use std::io::prelude::*;
 
 use anyhow::{Context, Error};
+use clap::App;
 
 /// The command name.
-pub const COMMAND_NAME: &str = "install";
+const COMMAND_NAME: &str = "install";
 
 /// The default path for service config.
 const CONFIG_PATH: &str = "/etc/lemurs.conf";
@@ -22,16 +23,29 @@ const SERVICE_DEFAULT: &str = include_str!(concat!(
     "/config/lemurs.service"
 ));
 
-pub fn run() -> Result<(), Error> {
-    // Write config file.
-    write_file(CONFIG_PATH, CONFIG_DEFAULT).context("error writing config file")?;
-    println!("Default config saved to: {}", CONFIG_PATH);
+pub struct Command;
 
-    // Write systemd service file.
-    write_file(SERVICE_PATH, SERVICE_DEFAULT).context("error writing systemd service file")?;
-    println!("systemd service saved to: {}", SERVICE_PATH);
+impl Command {
+    pub fn new() -> Command {
+        Command {}
+    }
+}
 
-    Ok(())
+impl crate::cli::Command for Command {
+    fn app(&self) -> App<'static> {
+        App::new(COMMAND_NAME).about("Install default config and system files.")
+    }
+    fn run(&self) -> Result<(), Error> {
+        // Write config file.
+        write_file(CONFIG_PATH, CONFIG_DEFAULT).context("error writing config file")?;
+        println!("Default config saved to: {}", CONFIG_PATH);
+
+        // Write systemd service file.
+        write_file(SERVICE_PATH, SERVICE_DEFAULT).context("error writing systemd service file")?;
+        println!("systemd service saved to: {}", SERVICE_PATH);
+
+        Ok(())
+    }
 }
 
 /// Creates a new or truncates an existing file and writes the given

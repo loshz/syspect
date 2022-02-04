@@ -3,33 +3,28 @@ use clap::{app_from_crate, App, AppSettings};
 
 use crate::{install, start};
 
-pub trait Command {
-    fn app(&self) -> App<'static>;
-    fn run(&self) -> Result<(), Error>;
-}
-
 pub struct Cli {
-    install: Box<dyn Command>,
-    start: Box<dyn Command>,
+    app: App<'static>,
 }
 
 impl Cli {
     pub fn new() -> Cli {
-        let install = Box::new(install::Command::new());
-        let start = Box::new(start::Command::new());
-        Cli { install, start }
-    }
-
-    pub fn run(self) -> Result<(), Error> {
+        // Create cli app from crate info.
         let app = app_from_crate!()
             .global_setting(AppSettings::PropagateVersion)
             .setting(AppSettings::SubcommandRequiredElseHelp)
-            .subcommand(self.install.app())
-            .subcommand(self.start.app());
+            .subcommand(
+                App::new(install::COMMAND_NAME).about("Install default config and system files."),
+            )
+            .subcommand(App::new(start::COMMAND_NAME).about("Start the daemon."));
 
-        match app.get_matches().subcommand_name() {
-            Some("install") => self.install.run(),
-            Some("start") => self.start.run(),
+        Cli { app }
+    }
+
+    pub fn run(self) -> Result<(), Error> {
+        match self.app.get_matches().subcommand() {
+            Some((install::COMMAND_NAME, args)) => install::run(args),
+            Some((start::COMMAND_NAME, args)) => start::run(args),
             _ => Err(Error::msg("exhausted list of subcommands".to_owned())),
         }
     }

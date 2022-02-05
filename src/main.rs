@@ -5,6 +5,7 @@ use nix::unistd::Uid;
 mod cli;
 mod install;
 mod start;
+mod uninstall;
 
 use crate::cli::*;
 

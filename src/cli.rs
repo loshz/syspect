@@ -1,7 +1,7 @@
 use anyhow::Error;
 use clap::{app_from_crate, App, AppSettings, Arg};
 
-use crate::{install, start};
+use crate::{install, start, uninstall};
 
 pub struct Cli {
     app: App<'static>,
@@ -16,7 +16,6 @@ impl Cli {
             .arg(
                 Arg::new("config")
                     .long("conf")
-                    .takes_value(true)
                     .value_name("PATH")
                     .help("Path to the config file installation location")
                     .default_value(install::DEFAULT_CONFIG_PATH),
@@ -24,19 +23,36 @@ impl Cli {
             .arg(
                 Arg::new("service")
                     .long("service")
-                    .takes_value(true)
                     .value_name("PATH")
                     .help("Path to the systemd service file installation location")
                     .default_value(install::DEFAULT_SERVICE_PATH),
             );
         let start = App::new(start::COMMAND_NAME).about("Start the daemon.");
+        let uninstall = App::new(uninstall::COMMAND_NAME)
+            .setting(AppSettings::DisableVersionFlag)
+            .about("Remove config and systemd service files.")
+            .arg(
+                Arg::new("config")
+                    .long("conf")
+                    .value_name("PATH")
+                    .help("Path to the config file location")
+                    .default_value(install::DEFAULT_CONFIG_PATH),
+            )
+            .arg(
+                Arg::new("service")
+                    .long("service")
+                    .value_name("PATH")
+                    .help("Path to the systemd service file location")
+                    .default_value(install::DEFAULT_SERVICE_PATH),
+            );
 
         // Create cli app from crate info.
         let app = app_from_crate!()
             .global_setting(AppSettings::PropagateVersion)
             .setting(AppSettings::SubcommandRequiredElseHelp)
             .subcommand(install)
-            .subcommand(start);
+            .subcommand(start)
+            .subcommand(uninstall);
 
         Cli { app }
     }
@@ -45,6 +61,7 @@ impl Cli {
         match self.app.get_matches().subcommand() {
             Some((install::COMMAND_NAME, args)) => install::run(args),
             Some((start::COMMAND_NAME, args)) => start::run(args),
+            Some((uninstall::COMMAND_NAME, args)) => uninstall::run(args),
             _ => Err(Error::msg("exhausted list of subcommands".to_owned())),
         }
     }

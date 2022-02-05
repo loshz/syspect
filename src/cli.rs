@@ -9,7 +9,7 @@ pub struct Cli {
 
 impl Cli {
     pub fn new() -> Cli {
-        // Create subcommands
+        // Install subcommand.
         let install = App::new(install::COMMAND_NAME)
             .setting(AppSettings::DisableVersionFlag)
             .about("Install default config and systemd service files.")
@@ -27,7 +27,20 @@ impl Cli {
                     .help("Path to the systemd service file installation location")
                     .default_value(install::DEFAULT_SERVICE_PATH),
             );
-        let start = App::new(start::COMMAND_NAME).about("Start the daemon.");
+
+        // Start subcommand.
+        let start = App::new(start::COMMAND_NAME)
+            .setting(AppSettings::DisableVersionFlag)
+            .about("Start the daemon.")
+            .arg(
+                Arg::new("config")
+                    .long("conf")
+                    .value_name("PATH")
+                    .help("Path to the config file location")
+                    .default_value(install::DEFAULT_CONFIG_PATH),
+            );
+
+        // Uninstall subcommand.
         let uninstall = App::new(uninstall::COMMAND_NAME)
             .setting(AppSettings::DisableVersionFlag)
             .about("Remove config and systemd service files.")

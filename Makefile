@@ -1,4 +1,5 @@
 TARGET ?= x86_64-unknown-linux-gnu
+BIN ?= /usr/bin
 
 .PHONY: install-rust-tools
 install-rust-tools:
@@ -23,3 +24,7 @@ build:
 .PHONY: release
 release:
 	cargo build --release --target ${TARGET}
+
+.PHONY: install
+install: release
+	sudo cp ./target/${TARGET}/release/lemurs ${BIN}

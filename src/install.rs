@@ -8,40 +8,33 @@ use clap::ArgMatches;
 pub const COMMAND_NAME: &str = "install";
 
 /// The default path for service config.
-const CONFIG_PATH: &str = "/etc/lemurs.conf";
-
-/// An example config file with defaults loaded at compile time.
-const CONFIG_DEFAULT: &str =
-    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/config/lemurs.conf"));
+pub const DEFAULT_CONFIG_PATH: &str = "/etc/lemurs.conf";
 
 /// The default path for the systemd service.
-const SERVICE_PATH: &str = "/usr/lib/systemd/system/lemurs.service";
+pub const DEFAULT_SERVICE_PATH: &str = "/usr/lib/systemd/system/lemurs.service";
+
+/// An example config file with defaults loaded at compile time.
+const DEFAULT_CONFIG: &str =
+    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/config/lemurs.conf"));
 
 /// A preconfigured systemd service file loaded at compile time.
-const SERVICE_DEFAULT: &str = include_str!(concat!(
+const DEFAULT_SERVICE: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
     "/config/lemurs.service"
 ));
 
 pub fn run(args: &ArgMatches) -> Result<(), Error> {
-    let mut conf_path = CONFIG_PATH;
-    let mut service_path = SERVICE_PATH;
-
-    // Parse args.
-    if let Some(p) = args.value_of("config") {
-        conf_path = p
-    }
-    if let Some(p) = args.value_of("service") {
-        service_path = p
-    }
-
     // Write config file.
-    write_file(conf_path, CONFIG_DEFAULT).context("error writing config file")?;
-    println!("Default config saved to: {}", conf_path);
-
+    if let Some(path) = args.value_of("config") {
+        write_file(path, DEFAULT_CONFIG).context("error writing config file")?;
+        println!("Default config saved to: {}", path);
+    }
+    //
     // Write systemd service file.
-    write_file(service_path, SERVICE_DEFAULT).context("error writing systemd service file")?;
-    println!("systemd service saved to: {}", service_path);
+    if let Some(path) = args.value_of("service") {
+        write_file(path, DEFAULT_SERVICE).context("error writing systemd service file")?;
+        println!("systemd service saved to: {}", path);
+    }
 
     Ok(())
 }

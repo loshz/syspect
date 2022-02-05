@@ -12,20 +12,22 @@ impl Cli {
         // Create subcommands
         let install = App::new(install::COMMAND_NAME)
             .setting(AppSettings::DisableVersionFlag)
-            .about("Install default config and system files.")
+            .about("Install default config and systemd service files.")
             .arg(
                 Arg::new("config")
-                    .long("conf-path")
+                    .long("conf")
                     .takes_value(true)
                     .value_name("PATH")
-                    .help("Provides a path to the config file installation location"),
+                    .help("Path to the config file installation location")
+                    .default_value(install::DEFAULT_CONFIG_PATH),
             )
             .arg(
                 Arg::new("service")
-                    .long("service-path")
+                    .long("service")
                     .takes_value(true)
                     .value_name("PATH")
-                    .help("Provides a path to the systemd service file installation location"),
+                    .help("Path to the systemd service file installation location")
+                    .default_value(install::DEFAULT_SERVICE_PATH),
             );
         let start = App::new(start::COMMAND_NAME).about("Start the daemon.");
 

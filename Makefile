@@ -1,4 +1,3 @@
-VERSION ?= 0.1.0
 TARGET ?= x86_64-unknown-linux-gnu
 
 .PHONY: install-rust-tools

@@ -28,15 +28,3 @@ pub fn run(args: &ArgMatches) -> Result<(), Error> {
 
     Ok(())
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    // Test that not passing a config path returns an error.
-    #[test]
-    fn test_run_missing_config_error() {
-        // TODO: implement.
-        assert!(true);
-    }
-}

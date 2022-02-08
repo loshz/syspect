@@ -5,6 +5,7 @@ use nix::unistd::Uid;
 mod cli;
 mod config;
 mod install;
+mod metrics;
 mod start;
 mod uninstall;
 

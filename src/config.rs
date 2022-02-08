@@ -6,13 +6,14 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub log_level: Option<String>,
-    pub prometheus: Prometheus,
+    pub metrics_host: String,
+    pub metrics_port: u16,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Prometheus {
-    pub address: String,
-    pub port: u16,
+impl Config {
+    pub fn metrics_address(self) -> String {
+        format!("{}:{}", self.metrics_host, self.metrics_port)
+    }
 }
 
 pub fn from_file(path: &str) -> Result<Config, Error> {
@@ -48,10 +49,8 @@ mod tests {
     fn test_parse_success() {
         let toml_str = r#"
             log_level = "info"
-
-            [prometheus]
-            address = "localhost"
-            port = 9090
+            metrics_host = "localhost"
+            metrics_port = 9090
         "#;
 
         let config = parse(toml_str);
@@ -59,8 +58,8 @@ mod tests {
 
         if let Ok(c) = config {
             assert_eq!(c.log_level, Some("info".to_owned()));
-            assert_eq!(c.prometheus.address, "localhost".to_owned());
-            assert_eq!(c.prometheus.port, 9090);
+            assert_eq!(c.metrics_host, "localhost".to_owned());
+            assert_eq!(c.metrics_port, 9090);
         }
     }
 }

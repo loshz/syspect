@@ -2,7 +2,7 @@
 name = "lemurs"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.58"
+rust-version = "1.59"
 description = "Linux eBPF Monitoring daemon"
 homepage = "https://github.com/loshz/lemurs"
 repository = "https://github.com/loshz/lemurs"

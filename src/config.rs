@@ -54,7 +54,7 @@ mod tests {
         "#;
 
         let config = parse(toml_str);
-        assert!(!config.is_err());
+        assert!(config.is_ok());
 
         if let Ok(c) = config {
             assert_eq!(c.log_level, Some("info".to_owned()));

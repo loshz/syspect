@@ -1,7 +1,7 @@
 use anyhow::Error;
 use clap::{app_from_crate, App, AppSettings, Arg};
 
-use crate::{install, start, uninstall};
+use super::*;
 
 pub struct Cli {
     app: App<'static>,

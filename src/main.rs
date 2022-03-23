@@ -4,12 +4,9 @@ use nix::unistd::Uid;
 
 mod cli;
 mod config;
-mod install;
 mod metrics;
-mod start;
-mod uninstall;
 
-use crate::cli::*;
+use crate::cli::Cli;
 
 /// Service data loaded from Cargo.toml
 pub const PKG_NAME: &str = env!("CARGO_PKG_NAME");

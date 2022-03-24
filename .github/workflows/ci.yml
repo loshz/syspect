@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # Install clang and required tooling
-      - run: sudo apt update -y && apt install -y clang-10 libelf-dev
+      - run: sudo apt update -y && sudo apt install -y clang-10 libelf-dev
       # Install libbpf
       - run: |
           sudo mkdir -p /usr/include/bpf/

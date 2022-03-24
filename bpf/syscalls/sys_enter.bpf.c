@@ -4,12 +4,12 @@
 
 char __license[] SEC("license") = "Dual MIT/GPL";
 
-struct bpf_map_def SEC("maps") syscall_count = {
-    .type = BPF_MAP_TYPE_ARRAY,
-    .key_size = sizeof(u32),
-    .value_size = sizeof(u64),
-    .max_entries = 1,
-};
+struct {
+    __uint(type, BPF_MAP_TYPE_ARRAY);
+    __type(key, u32);
+    __type(value, u64);
+    __uint(max_entries, 1);
+} syscall_count SEC(".maps");
 
 // This tracepoint is defined in:
 // /sys/kernel/debug/tracing/events/raw_syscalls/sys_enter

@@ -28,3 +28,8 @@ release:
 .PHONY: install
 install: release
 	sudo cp ./target/${TARGET}/release/lemurs ${BIN}
+
+.PHONY: btf
+btf:
+	uname -rvmo
+	bpftool btf dump file /sys/kernel/btf/vmlinux format c > bpf/vmlinux.h

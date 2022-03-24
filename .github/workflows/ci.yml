@@ -19,3 +19,17 @@ jobs:
       - run: make install-rust-tools
       - run: make lint
       - run: make test
+
+  bpf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # Install clang and required tooling
+      - run: sudo apt update -y && apt install -y clang-10 libelf-dev
+      # Install libbpf
+      - run: |
+          sudo mkdir -p /usr/include/bpf/
+          curl -sSL "https://github.com/libbpf/libbpf/archive/refs/tags/v0.7.0.tar.gz" -o /tmp/libbpf.tar.gz
+          sudo tar -xvf /tmp/libbpf.tar.gz --strip-components=2 -C /usr/include/bpf "libbpf-0.7.0/src/bpf_helper_defs.h" "libbpf-0.7.0/src/bpf_helpers.h"
+      # Compile bpf probes
+      - run: BPF_OUT=/tmp/probe.o make compile-bpf

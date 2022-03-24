@@ -112,9 +112,9 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "metrics_server",
  "nix",
  "serde",
- "tiny_http",
  "toml",
 ]
 
@@ -152,6 +152,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5aa361d4faea93603064a027415f07bd8e1d5c88c9fbf68bf56a285428fd79ce"
 dependencies = [
  "autocfg",
+]
+
+[[package]]
+name = "metrics_server"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b082dfdbf3170cbbad17e27a3ad6f9ac4fab57b69c2bec2d16640e3d3a4e703"
+dependencies = [
+ "tiny_http",
 ]
 
 [[package]]

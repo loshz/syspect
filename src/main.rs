@@ -4,7 +4,6 @@ use nix::unistd::Uid;
 
 mod cli;
 mod config;
-mod metrics;
 
 use crate::cli::Cli;
 

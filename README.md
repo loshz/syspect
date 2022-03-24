@@ -5,6 +5,26 @@
 
 A Linux service that monitors systems via eBPF and exports data to Prometheus.
 
+## Usage
+```
+$ sudo lemurs --help
+lemurs 0.1.0
+Linux eBPF Monitoring daemon
+
+USAGE:
+    lemurs <SUBCOMMAND>
+
+OPTIONS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+SUBCOMMANDS:
+    help         Print this message or the help of the given subcommand(s)
+    install      Install default config and systemd service files.
+    start        Start the daemon.
+    uninstall    Remove config and systemd service files.
+```
+
 ## BPF
 The current BTF definitions were generated using the following Kernel:
 ```

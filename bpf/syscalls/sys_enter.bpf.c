@@ -2,8 +2,6 @@
 
 #include <bpf/bpf_helpers.h>
 
-char __license[] SEC("license") = "Dual MIT/GPL";
-
 struct {
     __uint(type, BPF_MAP_TYPE_ARRAY);
     __type(key, u32);

@@ -26,7 +26,7 @@ SUBCOMMANDS:
 ```
 
 ### Config
-The default config file is located at `/etc/lemurs.conf`. A detailed example can be found [./config/lemurs.conf](here).
+The default config file is located at `/etc/lemurs.conf`. A detailed example can be found [here](./config/lemurs.conf).
 
 ## BPF
 The included `vmlinux.h` BTF definitions were generated using the following Kernel:

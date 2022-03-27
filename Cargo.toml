@@ -11,6 +11,7 @@ keywords = ["linux", "ebpf", "monitoring", "metrics"]
 readme = "README.md"
 
 [dependencies]
+libbpf-rs = "0.16"
 nix = "0.23"
 clap = { version = "3.0", default-features = false, features = ["cargo", "std"] }
 anyhow = "1.0"

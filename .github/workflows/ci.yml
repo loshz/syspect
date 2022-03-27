@@ -16,6 +16,8 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: 1.59
+      # Install clang and required tooling
+      - run: sudo apt update -y && sudo apt install -y clang-10 libelf-dev
       - run: make install-rust-tools
       - run: make lint
       - run: make test

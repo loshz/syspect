@@ -4,6 +4,7 @@ use anyhow::Error;
 use clap::ArgMatches;
 use metrics_server::MetricsServer;
 
+use crate::bpf;
 use crate::config;
 
 /// The command name.
@@ -23,6 +24,10 @@ pub fn run(args: &ArgMatches) -> Result<(), Error> {
     println!("Using config: {}", path);
 
     let c = config::from_file(path)?;
+
+    // Remove memlock limit in order to load eBPF programs.
+    bpf::remove_memlock_rlimit()?;
+    println!("removing memlock rlimit");
 
     // Expose the Prometheus metrics.
     let server = MetricsServer::new();

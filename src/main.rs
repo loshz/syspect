@@ -2,6 +2,7 @@ use std::process;
 
 use nix::unistd::Uid;
 
+mod bpf;
 mod cli;
 mod config;
 

@@ -1,6 +1,6 @@
-TARGET ?= x86_64-unknown-linux-gnu
 BIN ?= /usr/bin
-BPF_OUT ?= ./target/probe.o
+BPF_OUT ?= ./target/bpf
+TARGET ?= x86_64-unknown-linux-gnu
 
 .PHONY: install-rust-tools
 install-rust-tools:
@@ -37,4 +37,5 @@ btf:
 
 .PHONY: compile-bpf
 compile-bpf:
-	clang -c -O2 -target bpf -I ./bpf/ -o ${BPF_OUT} ./bpf/probe.bpf.c
+	mkdir -p ${BPF_OUT}
+	clang -c -O2 -target bpf -I ./bpf/ -o ${BPF_OUT}/probe.bpf.o ./bpf/probe.bpf.c

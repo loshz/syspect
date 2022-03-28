@@ -7,11 +7,12 @@ description = "Linux eBPF Monitoring daemon"
 homepage = "https://github.com/loshz/lemurs"
 repository = "https://github.com/loshz/lemurs"
 license = "GPL-3.0"
-keywords = ["linux", "ebpf", "monitoring", "metrics"]
+keywords = ["linux", "ebpf", "monitoring", "metrics", "prometheus"]
 readme = "README.md"
 
 [dependencies]
 libbpf-rs = "0.16"
+libc = "0.2"
 nix = "0.23"
 clap = { version = "3.0", default-features = false, features = ["cargo", "std"] }
 anyhow = "1.0"

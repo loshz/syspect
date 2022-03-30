@@ -1,11 +1,12 @@
 use std::{thread, time};
 
-use anyhow::Error;
+use anyhow::{Context, Error};
 use clap::ArgMatches;
 use metrics_server::MetricsServer;
 
 use crate::bpf;
 use crate::config;
+use crate::helpers;
 
 /// The command name.
 pub const COMMAND_NAME: &str = "start";
@@ -26,16 +27,42 @@ pub fn run(args: &ArgMatches) -> Result<(), Error> {
     let c = config::from_file(path)?;
 
     // Remove memlock limit in order to load eBPF programs.
-    bpf::remove_memlock_rlimit()?;
-    println!("removing memlock rlimit");
+    helpers::remove_memlock_rlimit()?;
+    println!("removed memlock rlimit");
 
     // Expose the Prometheus metrics.
     let server = MetricsServer::new();
     server.serve(c.metrics_address().as_str());
 
-    // simulate work
-    let ten = time::Duration::from_secs(600);
-    thread::sleep(ten);
+    let sys_enter = bpf::sys_enter::SysEnterSkelBuilder::default();
+    let prog = sys_enter.open().context("failed to open bpf prog")?;
+    let mut tracepoint = prog.load().context("failed to load bpf prog")?;
+    tracepoint
+        .attach()
+        .context("failed to attach to bpf tracepoint")?;
+
+    loop {
+        let b: &[u8; 4] = &[0, 0, 0, 0];
+        let count = tracepoint
+            .maps()
+            .syscall_count()
+            .lookup(b, libbpf_rs::MapFlags::ANY);
+
+        let total = match count {
+            Ok(t) => t,
+            Err(e) => {
+                eprintln!("{}", e);
+                return Err(Error::msg("total".to_owned()));
+            }
+        };
+
+        if let Some(t) = total {
+            println!("{:?}", t.get(0));
+        }
+
+        let ten = time::Duration::from_secs(1);
+        thread::sleep(ten);
+    }
 
     Ok(())
 }

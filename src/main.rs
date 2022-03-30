@@ -5,6 +5,7 @@ use nix::unistd::Uid;
 mod bpf;
 mod cli;
 mod config;
+mod helpers;
 
 use crate::cli::Cli;
 

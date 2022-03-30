@@ -1,7 +1,13 @@
-use std::process::Command;
+use std::path::Path;
+
+use libbpf_cargo::SkeletonBuilder;
 
 fn main() {
     // Compile bpf code if changed.
     println!("cargo:rerun-if-changed=./bpf/");
-    Command::new("make").arg("compile-bpf").status().unwrap();
+    let skel = Path::new("./src/bpf/sys_enter.rs");
+    SkeletonBuilder::new("./bpf/syscalls/sys_enter.bpf.c")
+        .clang_args("-c -O2 -I./bpf")
+        .generate(&skel)
+        .unwrap();
 }

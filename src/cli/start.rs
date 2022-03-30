@@ -1,8 +1,9 @@
-use std::{thread, time};
+use std::time::Duration;
 
 use anyhow::{Context, Error};
 use clap::ArgMatches;
 use metrics_server::MetricsServer;
+use tokio::{signal, time};
 
 use crate::bpf;
 use crate::config;
@@ -11,7 +12,8 @@ use crate::helpers;
 /// The command name.
 pub const COMMAND_NAME: &str = "start";
 
-pub fn run(args: &ArgMatches) -> Result<(), Error> {
+#[tokio::main]
+pub async fn run(args: &ArgMatches) -> Result<(), Error> {
     println!(
         "Starting service, version: {} {}",
         crate::PKG_NAME,
@@ -42,6 +44,11 @@ pub fn run(args: &ArgMatches) -> Result<(), Error> {
         .context("failed to attach to bpf tracepoint")?;
 
     loop {
+        tokio::select! {
+            _ = time::sleep(Duration::from_secs(1)) => {}
+            _ = signal::ctrl_c() => break
+        }
+
         let b: &[u8; 4] = &[0, 0, 0, 0];
         let count = tracepoint
             .maps()
@@ -59,10 +66,9 @@ pub fn run(args: &ArgMatches) -> Result<(), Error> {
         if let Some(t) = total {
             println!("{:?}", t.get(0));
         }
-
-        let ten = time::Duration::from_secs(1);
-        thread::sleep(ten);
     }
+
+    // TODO: do something on shutdown.
 
     Ok(())
 }

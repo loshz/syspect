@@ -49,22 +49,25 @@ pub async fn run(args: &ArgMatches) -> Result<(), Error> {
             _ = signal::ctrl_c() => break
         }
 
+        // Lookup the value saved to the bpf map.
+        // This will return a Result<Option<Vec<u8>>>
         let b: &[u8; 4] = &[0, 0, 0, 0];
-        let count = tracepoint
+        let syscall_count = match tracepoint
             .maps()
             .syscall_count()
-            .lookup(b, libbpf_rs::MapFlags::ANY);
-
-        let total = match count {
-            Ok(t) => t,
-            Err(e) => {
-                eprintln!("{}", e);
-                return Err(Error::msg("total".to_owned()));
-            }
+            .lookup(b, libbpf_rs::MapFlags::ANY)
+        {
+            Ok(count) => count,
+            Err(e) => return Err(Error::new(e)),
         };
 
-        if let Some(t) = total {
-            println!("{:?}", t.get(0));
+        // Check that count contains a value.
+        // Continue if no count.
+        if let Some(total) = syscall_count {
+            if !total.is_empty() {
+                // TODO: check the contents of total.
+                println!("{:?}", total.as_slice());
+            }
         }
     }
 

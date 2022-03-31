@@ -9,8 +9,9 @@ mod helpers;
 
 use crate::cli::Cli;
 
-/// Service data loaded from Cargo.toml
+/// Package name loaded from Cargo.toml
 pub const PKG_NAME: &str = env!("CARGO_PKG_NAME");
+/// Package version loaded from Cargo.toml
 pub const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() {
@@ -20,9 +21,8 @@ fn main() {
         process::exit(1);
     }
 
-    let cli = Cli::new();
-
     // Run the service.
+    let cli = Cli::new();
     process::exit(match cli.run() {
         Ok(_) => 0,
         Err(err) => {

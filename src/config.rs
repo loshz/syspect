@@ -5,7 +5,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    pub log_level: Option<String>,
+    pub log_level: String,
     pub metrics_host: String,
     pub metrics_port: u16,
 
@@ -74,7 +74,7 @@ mod tests {
         assert!(config.is_ok());
 
         if let Ok(c) = config {
-            assert_eq!(c.log_level, Some("info".to_owned()));
+            assert_eq!(c.log_level, "info".to_owned());
             assert_eq!(c.metrics_host, "localhost".to_owned());
             assert_eq!(c.metrics_port, 9090);
             assert!(c.bpf.syscalls.sys_enter);

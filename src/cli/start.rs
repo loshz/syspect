@@ -3,6 +3,7 @@ use std::u64;
 
 use anyhow::{Context, Error};
 use clap::ArgMatches;
+use log::*;
 use metrics_server::MetricsServer;
 use tokio::{signal, time};
 
@@ -15,23 +16,25 @@ pub const COMMAND_NAME: &str = "start";
 
 #[tokio::main]
 pub async fn run(args: &ArgMatches) -> Result<(), Error> {
-    println!(
-        "Starting service, version: {} {}",
-        crate::PKG_NAME,
-        crate::PKG_VERSION
-    );
-
     let path = match args.value_of("config") {
         Some(path) => path,
         _ => return Err(Error::msg("config not specified".to_owned())),
     };
-    println!("Using config: {}", path);
 
     let c = config::from_file(path)?;
 
+    // Configure system logging.
+    helpers::configure_loging(&c.log_level);
+    info!(
+        "Starting service: {} {}",
+        crate::PKG_NAME,
+        crate::PKG_VERSION
+    );
+    info!("Using config: {}", path);
+
     // Remove memlock limit in order to load eBPF programs.
     helpers::remove_memlock_rlimit()?;
-    println!("removed memlock rlimit");
+    info!("Removed memlock rlimit");
 
     // Expose the Prometheus metrics.
     let server = MetricsServer::new();
@@ -72,7 +75,7 @@ pub async fn run(args: &ArgMatches) -> Result<(), Error> {
         }
     }
 
-    // TODO: do something on shutdown.
+    info!("Stopping service");
 
     Ok(())
 }

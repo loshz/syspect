@@ -32,5 +32,5 @@ The default config file is located at `/etc/lemurs.conf`. A detailed example can
 The included `vmlinux.h` BTF definitions were generated using the following Kernel:
 ```
 $ uname -rvmo
-5.16.16-arch1-1 #1 SMP PREEMPT Mon, 21 Mar 2022 22:59:40 +0000 x86_64 GNU/Linux
+5.17.1-arch1-1 #1 SMP PREEMPT Mon, 28 Mar 2022 20:55:33 +0000 x86_64 GNU/Linux
 ```

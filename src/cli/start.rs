@@ -1,4 +1,5 @@
 use std::time::Duration;
+use std::u64;
 
 use anyhow::{Context, Error};
 use clap::ArgMatches;
@@ -61,12 +62,12 @@ pub async fn run(args: &ArgMatches) -> Result<(), Error> {
             Err(e) => return Err(Error::new(e)),
         };
 
-        // Check that count contains a value.
+        // Check that count contains Some value.
         // Continue if no count.
         if let Some(total) = syscall_count {
             if !total.is_empty() {
-                // TODO: check the contents of total.
-                println!("{:?}", total.as_slice());
+                // total is a &[u8; 8] containing the little-endian representation of a 64 bit number.
+                println!("{}", u64::from_le_bytes(total.try_into().unwrap()));
             }
         }
     }

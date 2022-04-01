@@ -62,11 +62,12 @@ pub async fn run(args: &ArgMatches) -> Result<(), Error> {
     tracepoint
         .attach()
         .context("failed to attach to ebpf tracepoint")?;
+    info!("Running eBPF programs every {}s", c.interval);
 
     loop {
         // Listen for CTRL+C signal events or sleep.
         tokio::select! {
-            _ = time::sleep(Duration::from_secs(1)) => {}
+            _ = time::sleep(Duration::from_secs(c.interval)) => {}
             _ = signal::ctrl_c() => break
         }
 

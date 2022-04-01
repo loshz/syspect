@@ -6,6 +6,7 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub log_level: String,
+    pub interval: u64,
     pub metrics_host: String,
     pub metrics_port: u16,
 
@@ -23,7 +24,7 @@ pub struct Syscalls {
 }
 
 impl Config {
-    pub fn metrics_address(self) -> String {
+    pub fn metrics_address(&self) -> String {
         format!("{}:{}", self.metrics_host, self.metrics_port)
     }
 }
@@ -49,7 +50,7 @@ mod tests {
     #[test]
     fn test_parse_error() {
         let toml_str = r#"
-            log_level = "info"
+            does_not_exist = true
         "#;
 
         let config = parse(toml_str);
@@ -61,6 +62,7 @@ mod tests {
     fn test_parse_success() {
         let toml_str = r#"
             log_level = "info"
+            interval = 10
             metrics_host = "localhost"
             metrics_port = 9090
 
@@ -75,6 +77,7 @@ mod tests {
 
         if let Ok(c) = config {
             assert_eq!(c.log_level, "info".to_owned());
+            assert_eq!(c.interval, 10);
             assert_eq!(c.metrics_host, "localhost".to_owned());
             assert_eq!(c.metrics_port, 9090);
             assert!(c.bpf.syscalls.sys_enter);

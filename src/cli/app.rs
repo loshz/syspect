@@ -29,10 +29,12 @@ enum Commands {
 
 #[derive(Args)]
 struct Install {
+    /// Path to the config file installation location
     #[clap(long, short)]
     #[clap(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
     config: String,
 
+    /// Path to the systemd service file installation location
     #[clap(long, short)]
     #[clap(default_value_t = String::from(DEFAULT_SERVICE_PATH))]
     service: String,
@@ -40,6 +42,8 @@ struct Install {
 
 #[derive(Args)]
 struct Start {
+    /// Path to the config file installation location
+    #[clap(long, short)]
     #[clap(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
     config: String,
 }

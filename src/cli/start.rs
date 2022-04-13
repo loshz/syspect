@@ -63,6 +63,9 @@ pub async fn run(args: &ArgMatches) -> Result<(), Error> {
         .context("failed to attach to ebpf tracepoint")?;
     info!("Running eBPF programs every {}s", c.interval);
 
+    // Keep track of the current count.
+    let mut current = 0;
+
     loop {
         // Listen for CTRL+C signal events or sleep.
         tokio::select! {
@@ -89,7 +92,12 @@ pub async fn run(args: &ArgMatches) -> Result<(), Error> {
                 // total is a &[u8; 8] containing the little-endian representation of a 64 bit number,
                 // so we need to convert to u64 in order to get the count.
                 let count = u64::from_le_bytes(total.try_into().unwrap());
-                gauge.inc_by(count);
+
+                // Update the gauge and current count value.
+                gauge.set(count - current);
+                current = count;
+
+                // Encode the current registry and update the metrics server.
                 let mut encoded = Vec::new();
                 encode(&mut encoded, &registry).unwrap();
                 server.update(encoded);

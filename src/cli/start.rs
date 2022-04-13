@@ -2,7 +2,6 @@ use std::time::Duration;
 use std::u64;
 
 use anyhow::{Context, Error};
-use clap::ArgMatches;
 use log::info;
 use metrics_server::MetricsServer;
 use prometheus_client::encoding::text::encode;
@@ -14,18 +13,10 @@ use crate::bpf;
 use crate::config;
 use crate::helpers;
 
-/// The command name.
-pub const COMMAND_NAME: &str = "start";
-
 #[tokio::main]
-pub async fn run(args: &ArgMatches) -> Result<(), Error> {
-    let path = match args.value_of("config") {
-        Some(path) => path,
-        _ => return Err(Error::msg("config not specified".to_owned())),
-    };
-
+pub async fn run(config: &str) -> Result<(), Error> {
     // Load config from file.
-    let c = config::from_file(path)?;
+    let c = config::from_file(config)?;
 
     // Configure system logging.
     helpers::configure_loging(&c.log_level);
@@ -34,7 +25,7 @@ pub async fn run(args: &ArgMatches) -> Result<(), Error> {
         crate::PKG_NAME,
         crate::PKG_VERSION
     );
-    info!("Using config: {}", path);
+    info!("Using config: {}", config);
 
     // Remove memlock limit in order to load eBPF programs.
     helpers::remove_memlock_rlimit()?;

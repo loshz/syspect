@@ -1,5 +1,6 @@
 use std::process;
 
+use clap::Parser;
 use nix::unistd::Uid;
 
 mod bpf;
@@ -22,7 +23,7 @@ fn main() {
     }
 
     // Run the service.
-    let cli = Cli::new();
+    let cli = Cli::parse();
     process::exit(match cli.run() {
         Ok(_) => 0,
         Err(err) => {

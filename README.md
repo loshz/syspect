@@ -19,10 +19,10 @@ OPTIONS:
     -V, --version    Print version information
 
 SUBCOMMANDS:
-    help         Print this message or the help of the given subcommand(s)
     install      Install default config and systemd service files
     start        Start the daemon
     uninstall    Remove config and systemd service files
+    help         Print this message or the help of the given subcommand(s)
 ```
 
 ### Config

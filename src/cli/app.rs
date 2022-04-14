@@ -1,5 +1,5 @@
 use anyhow::Error;
-use clap::{Args, Parser, Subcommand};
+use clap::{AppSettings, Args, Parser, Subcommand};
 
 use super::*;
 
@@ -12,6 +12,7 @@ const DEFAULT_SERVICE_PATH: &str = "/usr/lib/systemd/system/lemurs.service";
 #[derive(Parser)]
 #[clap(version, about)]
 #[clap(propagate_version = true)]
+#[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 pub struct Cli {
     #[clap(subcommand)]
     command: Commands,
@@ -28,22 +29,27 @@ enum Commands {
 }
 
 #[derive(Args)]
+#[clap(disable_version_flag = true)]
 struct Install {
     /// Path to the config file installation location
     #[clap(long, short)]
+    #[clap(value_name = "PATH")]
     #[clap(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
     config: String,
 
     /// Path to the systemd service file installation location
     #[clap(long, short)]
+    #[clap(value_name = "PATH")]
     #[clap(default_value_t = String::from(DEFAULT_SERVICE_PATH))]
     service: String,
 }
 
 #[derive(Args)]
+#[clap(disable_version_flag = true)]
 struct Start {
     /// Path to the config file installation location
     #[clap(long, short)]
+    #[clap(value_name = "PATH")]
     #[clap(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
     config: String,
 }

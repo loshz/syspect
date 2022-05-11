@@ -751,6 +751,13 @@ struct latency_record {
 
 struct kmap_ctrl {};
 
+struct timer_list {
+	struct hlist_node entry;
+	long unsigned int expires;
+	void (*function)(struct timer_list *);
+	u32 flags;
+};
+
 struct llist_head {
 	struct llist_node *first;
 };
@@ -1242,6 +1249,7 @@ struct task_struct {
 	struct kmap_ctrl kmap_ctrl;
 	int pagefault_disabled;
 	struct task_struct *oom_reaper_list;
+	struct timer_list oom_reaper_timer;
 	struct vm_struct *stack_vm_area;
 	refcount_t stack_refcount;
 	void *security;
@@ -1257,6 +1265,9 @@ struct task_struct {
 	int mce_count;
 	struct llist_head kretprobe_instances;
 	struct callback_head l1d_flush_kill;
+	long: 64;
+	long: 64;
+	long: 64;
 	struct thread_struct thread;
 };
 
@@ -2148,13 +2159,6 @@ struct swait_queue_head {
 struct completion {
 	unsigned int done;
 	struct swait_queue_head wait;
-};
-
-struct timer_list {
-	struct hlist_node entry;
-	long unsigned int expires;
-	void (*function)(struct timer_list *);
-	u32 flags;
 };
 
 struct workqueue_struct;
@@ -8064,7 +8068,7 @@ struct netns_ipv6 {
 	struct list_head fib6_walkers;
 	rwlock_t fib6_walker_lock;
 	spinlock_t fib6_gc_lock;
-	unsigned int ip6_rt_gc_expire;
+	atomic_t ip6_rt_gc_expire;
 	long unsigned int ip6_rt_last_gc;
 	unsigned char flowlabel_has_excl;
 	bool fib6_has_custom_rules;
@@ -23941,13 +23945,6 @@ struct _tlb_table {
 	char info[128];
 };
 
-enum tsx_ctrl_states {
-	TSX_CTRL_ENABLE = 0,
-	TSX_CTRL_DISABLE = 1,
-	TSX_CTRL_RTM_ALWAYS_ABORT = 2,
-	TSX_CTRL_NOT_SUPPORTED = 3,
-};
-
 enum split_lock_detect_state {
 	sld_off = 0,
 	sld_warn = 1,
@@ -23977,6 +23974,13 @@ enum pconfig_target {
 enum {
 	PCONFIG_CPUID_SUBLEAF_INVALID = 0,
 	PCONFIG_CPUID_SUBLEAF_TARGETID = 1,
+};
+
+enum tsx_ctrl_states {
+	TSX_CTRL_ENABLE = 0,
+	TSX_CTRL_DISABLE = 1,
+	TSX_CTRL_RTM_ALWAYS_ABORT = 2,
+	TSX_CTRL_NOT_SUPPORTED = 3,
 };
 
 enum energy_perf_value_index {
@@ -29135,7 +29139,6 @@ struct cpuhp_cpu_state {
 	bool rollback;
 	bool single;
 	bool bringup;
-	int cpu;
 	struct hlist_node *node;
 	struct hlist_node *last;
 	enum cpuhp_state cb_state;
@@ -34158,8 +34161,7 @@ enum hv_tsc_page_status {
 	HV_TSC_PAGE_GUEST_CHANGED = 1,
 	HV_TSC_PAGE_HOST_CHANGED = 2,
 	HV_TSC_PAGE_SET = 3,
-	HV_TSC_PAGE_UPDATING = 4,
-	HV_TSC_PAGE_BROKEN = 5,
+	HV_TSC_PAGE_BROKEN = 4,
 };
 
 struct kvm_hv_syndbg {
@@ -48796,20 +48798,16 @@ typedef u16 __compat_uid_t;
 
 typedef u16 __compat_gid_t;
 
-typedef u16 compat_dev_t;
-
 typedef u16 compat_nlink_t;
 
 struct compat_stat {
-	compat_dev_t st_dev;
-	u16 __pad1;
+	u32 st_dev;
 	compat_ino_t st_ino;
 	compat_mode_t st_mode;
 	compat_nlink_t st_nlink;
 	__compat_uid_t st_uid;
 	__compat_gid_t st_gid;
-	compat_dev_t st_rdev;
-	u16 __pad2;
+	u32 st_rdev;
 	u32 st_size;
 	u32 st_blksize;
 	u32 st_blocks;
@@ -50958,7 +50956,6 @@ struct io_wq_work_node {
 struct io_wq_work {
 	struct io_wq_work_node list;
 	unsigned int flags;
-	int fd;
 };
 
 struct trace_event_raw_io_uring_defer {
@@ -51669,7 +51666,10 @@ struct io_kiocb {
 	unsigned int flags;
 	u64 user_data;
 	u32 result;
-	u32 cflags;
+	union {
+		u32 cflags;
+		int fd;
+	};
 	struct io_ring_ctx *ctx;
 	struct task_struct *task;
 	struct percpu_ref *fixed_rsrc_refs;
@@ -54439,6 +54439,7 @@ struct svc_deferred_req {
 	size_t addrlen;
 	struct __kernel_sockaddr_storage daddr;
 	size_t daddrlen;
+	void *xprt_ctxt;
 	struct cache_deferred_req handle;
 	size_t xprt_hlen;
 	int argslen;
@@ -108298,6 +108299,8 @@ struct flow_dissector_key_vlan {
 		__be16 vlan_tci;
 	};
 	__be16 vlan_tpid;
+	__be16 vlan_eth_type;
+	u16 padding;
 };
 
 struct flow_dissector_mpls_lse {
@@ -115735,7 +115738,6 @@ struct ethtool_rx_flow_key {
 	struct flow_dissector_key_ip ip;
 	struct flow_dissector_key_vlan vlan;
 	struct flow_dissector_key_eth_addrs eth_addrs;
-	long: 48;
 };
 
 struct ethtool_rx_flow_match {

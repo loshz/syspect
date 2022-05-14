@@ -43926,6 +43926,7 @@ struct rate_sample {
 	int losses;
 	u32 acked_sacked;
 	u32 prior_in_flight;
+	u32 last_end_seq;
 	bool is_app_limited;
 	bool is_retrans;
 	bool is_ack_delayed;
@@ -84852,7 +84853,7 @@ enum pci_board_num_t {
 	pbn_panacom2 = 68,
 	pbn_panacom4 = 69,
 	pbn_plx_romulus = 70,
-	pbn_endrun_2_4000000 = 71,
+	pbn_endrun_2_3906250 = 71,
 	pbn_oxsemi = 72,
 	pbn_oxsemi_1_3906250 = 73,
 	pbn_oxsemi_2_3906250 = 74,
@@ -119016,7 +119017,7 @@ struct ip_tunnel {
 	long unsigned int err_time;
 	int err_count;
 	u32 i_seqno;
-	u32 o_seqno;
+	atomic_t o_seqno;
 	int tun_hlen;
 	u32 index;
 	u8 erspan_ver;
@@ -119072,7 +119073,7 @@ struct ip6_tnl {
 	int err_count;
 	long unsigned int err_time;
 	__u32 i_seqno;
-	__u32 o_seqno;
+	atomic_t o_seqno;
 	int hlen;
 	int tun_hlen;
 	int encap_hlen;

@@ -1,0 +1,94 @@
+targets = []
+
+[advisories]
+# The path where the advisory database is cloned/fetched into
+db-path = "~/.cargo/advisory-db"
+# The url(s) of the advisory databases to use
+db-urls = ["https://github.com/rustsec/advisory-db"]
+# The lint level for security vulnerabilities
+vulnerability = "deny"
+# The lint level for unmaintained crates
+unmaintained = "warn"
+# The lint level for crates that have been yanked from their source registry
+yanked = "deny"
+# The lint level for crates with security notices
+notice = "warn"
+# A list of advisory IDs to ignore
+ignore = []
+
+[licenses]
+# The lint level for crates which do not have a detectable license
+unlicensed = "deny"
+# List of explicitly allowed licenses
+allow = [
+    "Apache-2.0",
+	"BSD-2-Clause",
+	"BSD-3-Clause",
+    "MIT",
+	"ISC",
+
+]
+# List of explicitly disallowed licenses
+deny = []
+
+# Lint level for licenses considered copyleft
+copyleft = "allow"
+# Blanket approval or denial for OSI-approved or FSF Free/Libre licenses
+allow-osi-fsf-free = "neither"
+# Lint level used when no other predicates are matched
+default = "deny"
+# The confidence threshold for detecting a license from license text
+confidence-threshold = 0.8
+# Allow 1 or more licenses on a per-crate basis, so that particular licenses
+# aren't accepted for every possible crate as with the normal allow list
+exceptions = [
+    { allow = ["ISC", "MIT", "OpenSSL"], name = "ring", version = "*" },
+]
+
+[[licenses.clarify]]
+# The name of the crate the clarification applies to
+name = "ring"
+# The optional version constraint for the crate
+version = "*"
+# The SPDX expression for the license requirements of the crate
+expression = "MIT AND ISC AND OpenSSL"
+# One or more files in the crate's source used as the "source of truth" for
+# the license expression
+license-files = [
+    { path = "LICENSE", hash = 0xbd0eed23 }
+]
+
+[bans]
+# Lint level for when multiple versions of the same crate are detected
+multiple-versions = "warn"
+# Lint level for when a crate version requirement is `*`
+wildcards = "deny"
+# The graph highlighting used when creating dotgraphs for crates
+# with multiple versions
+highlight = "all"
+# List of crates that are allowed. Use with care!
+allow = []
+# List of crates to deny
+deny = []
+# Certain crates/versions that will be skipped when doing duplicate detection.
+skip = []
+# Similarly to `skip` allows you to skip certain crates during duplicate
+# detection
+skip-tree = []
+
+[sources]
+# Lint level for what to happen when a crate from a crate registry that is not
+# in the allow list is encountered
+unknown-registry = "deny"
+# Lint level for what to happen when a crate from a git repository that is not
+# in the allow list is encountered
+unknown-git = "deny"
+# List of URLs for allowed crate registries. Defaults to the crates.io index
+# if not specified
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+# List of URLs for allowed Git repositories
+allow-git = []
+
+[sources.allow-org]
+# 1 or more github.com organizations to allow git sources for
+github = []

@@ -42,7 +42,7 @@ pub async fn run(config: &str) -> Result<(), Error> {
 
     // Expose the Prometheus metrics.
     let addr = c.metrics_address();
-    let server = MetricsServer::new(addr.as_str());
+    let server = MetricsServer::http(addr.as_str());
     info!("Metrics exposed on: http://{}", addr.as_str());
 
     // Load the eBPF program and attach to the tracepoint.

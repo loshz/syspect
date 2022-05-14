@@ -288,7 +288,7 @@ dependencies = [
  "libc",
  "log",
  "metrics_server",
- "nix 0.23.1",
+ "nix",
  "prometheus-client",
  "serde",
  "simplelog",
@@ -320,14 +320,14 @@ dependencies = [
 
 [[package]]
 name = "libbpf-rs"
-version = "0.16.0"
+version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d38abb4d431ee43eea14af5e80488d094e10100d2b7a4a68f1b8885699d02631"
+checksum = "d7eadf9bb239f90435a9f998d9a28211efc54c3453b290eed6cd7c17a8570618"
 dependencies = [
  "bitflags",
  "lazy_static",
  "libbpf-sys",
- "nix 0.22.3",
+ "nix",
  "num_enum",
  "strum_macros",
  "thiserror",
@@ -409,19 +409,6 @@ dependencies = [
  "log",
  "wasi 0.11.0+wasi-snapshot-preview1",
  "windows-sys",
-]
-
-[[package]]
-name = "nix"
-version = "0.22.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e4916f159ed8e5de0082076562152a76b7a1f64a01fd9d1e0fea002c37624faf"
-dependencies = [
- "bitflags",
- "cc",
- "cfg-if",
- "libc",
- "memoffset",
 ]
 
 [[package]]
@@ -691,6 +678,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "rustversion"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f2cc38e8fa666e2de3c4aba7edeb5ffc5246c1c2ed0e3d17e560aeeba736b23f"
+
+[[package]]
 name = "ryu"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -843,13 +836,14 @@ dependencies = [
 
 [[package]]
 name = "strum_macros"
-version = "0.21.1"
+version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d06aaeeee809dbc59eb4556183dd927df67db1540de5be8d3ec0b6636358a5ec"
+checksum = "5bb0dc7ee9c15cea6199cde9a127fa16a4c5819af85395457ad72d68edc85a38"
 dependencies = [
  "heck 0.3.3",
  "proc-macro2",
  "quote",
+ "rustversion",
  "syn",
 ]
 

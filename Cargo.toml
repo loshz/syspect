@@ -11,7 +11,7 @@ keywords = ["linux", "ebpf", "monitoring", "metrics", "prometheus"]
 readme = "README.md"
 
 [dependencies]
-libbpf-rs = "0.16"
+libbpf-rs = "0.17"
 libc = "0.2"
 nix = "0.23"
 clap = { version = "3.1", default-features = false, features = ["std", "derive"] }

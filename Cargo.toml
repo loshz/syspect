@@ -18,11 +18,11 @@ clap = { version = "3.1", default-features = false, features = ["std", "derive"]
 anyhow = "1.0"
 toml = "0.5"
 serde = { version = "1.0", features = ["derive"] }
-metrics_server = "0.6"
+metrics_server = "0.8"
 tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread", "signal", "time"] }
 log = "0.4"
 simplelog = "0.11"
-prometheus-client = "0.15"
+prometheus-client = "0.16"
 
 [build-dependencies]
 libbpf-cargo = "0.10"

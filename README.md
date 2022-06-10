@@ -29,8 +29,4 @@ SUBCOMMANDS:
 The default config file is located at `/etc/lemurs.conf`. A detailed example can be found [here](./config/lemurs.conf).
 
 ## BPF
-The included `vmlinux.h` BTF definitions were generated using the following Kernel:
-```
-$ uname -rvmo
-5.18.2-arch1-1 #1 SMP PREEMPT_DYNAMIC Mon, 06 Jun 2022 19:58:58 +0000 x86_64 GNU/Linux
-```
+TODO: document included bpf probes.

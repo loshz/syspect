@@ -9,8 +9,8 @@ on:
       - main
 
 env:
-  RUST_VERSION: 1.60
-  LIBBPF_VERSION: 0.7.0
+  RUST_VERSION: 1.61
+  LIBBPF_VERSION: 0.8.0
 
 jobs:
   rust:
@@ -38,5 +38,7 @@ jobs:
           sudo mkdir -p /usr/include/bpf/
           curl -sSL "https://github.com/libbpf/libbpf/archive/refs/tags/v${{ env.LIBBPF_VERSION }}.tar.gz" -o /tmp/libbpf.tar.gz
           sudo tar -xvf /tmp/libbpf.tar.gz --strip-components=2 -C /usr/include/bpf "libbpf-${{ env.LIBBPF_VERSION }}/src/bpf_helper_defs.h" "libbpf-${{ env.LIBBPF_VERSION }}/src/bpf_helpers.h"
+      # Generate BTF headers
+      - run: make btf
       # Compile bpf probes
       - run: BPF_OUT=/tmp/probe.o make compile-bpf

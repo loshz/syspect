@@ -21,8 +21,8 @@ serde = { version = "1.0", features = ["derive"] }
 metrics_server = "0.8"
 tokio = { version = "1.17.0", features = ["macros", "rt-multi-thread", "signal", "time"] }
 log = "0.4"
-simplelog = "0.11"
+simplelog = "0.12"
 prometheus-client = "0.16"
 
 [build-dependencies]
-libbpf-cargo = "0.10"
+libbpf-cargo = "0.11"

@@ -14,7 +14,7 @@ env:
 
 jobs:
   rust:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -22,7 +22,7 @@ jobs:
           toolchain: ${{ env.RUST_VERSION }}
 
       # Install clang and required tooling.
-      - run: sudo apt update -y && sudo apt install -y clang-10 libelf-dev
+      - run: sudo apt update -y && sudo apt install -y clang-14 libelf-dev
 
       # Install libbpf.
       - run: |

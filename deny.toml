@@ -25,7 +25,6 @@ allow = [
 	"BSD-2-Clause",
 	"BSD-3-Clause",
     "MIT",
-	"ISC",
 
 ]
 # List of explicitly disallowed licenses
@@ -41,22 +40,7 @@ default = "deny"
 confidence-threshold = 0.8
 # Allow 1 or more licenses on a per-crate basis, so that particular licenses
 # aren't accepted for every possible crate as with the normal allow list
-exceptions = [
-    { allow = ["ISC", "MIT", "OpenSSL"], name = "ring", version = "*" },
-]
-
-[[licenses.clarify]]
-# The name of the crate the clarification applies to
-name = "ring"
-# The optional version constraint for the crate
-version = "*"
-# The SPDX expression for the license requirements of the crate
-expression = "MIT AND ISC AND OpenSSL"
-# One or more files in the crate's source used as the "source of truth" for
-# the license expression
-license-files = [
-    { path = "LICENSE", hash = 0xbd0eed23 }
-]
+exceptions = []
 
 [bans]
 # Lint level for when multiple versions of the same crate are detected

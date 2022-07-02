@@ -18,7 +18,7 @@ pub const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 fn main() {
     // Check if running as root.
     if !Uid::effective().is_root() {
-        eprintln!("service requires root permissions");
+        eprintln!("error: root permission required");
         process::exit(1);
     }
 

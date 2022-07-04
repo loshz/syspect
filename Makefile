@@ -14,7 +14,7 @@ install: release
 	sudo cp ./target/${TARGET}/release/lemurs ${BIN}
 
 btf:
-	bpftool btf dump file /sys/kernel/btf/vmlinux format c > bpf/vmlinux.h
+	bpftool btf dump file /sys/kernel/btf/vmlinux format c > ./bpf/vmlinux.h
 
 bpf: btf
 	mkdir -p ${BPF_OUT}

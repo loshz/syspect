@@ -4,4 +4,4 @@
 
 char __license[] SEC("license") = "Dual MIT/GPL";
 
-#include "syscalls/sys_enter.bpf.c"
+#include "tracepoints/sys_enter.bpf.c"

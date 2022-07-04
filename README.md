@@ -20,7 +20,8 @@ OPTIONS:
 
 SUBCOMMANDS:
     install      Install default config and systemd service files
-    start        Start the daemon
+    start        Start the daemon and expose a local metrics HTTP endpoint
+    probes       List currently supported eBPF probes
     uninstall    Remove config and systemd service files
     help         Print this message or the help of the given subcommand(s)
 ```

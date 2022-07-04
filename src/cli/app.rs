@@ -22,8 +22,10 @@ pub struct Cli {
 enum Commands {
     /// Install default config and systemd service files
     Install(Install),
-    /// Start the daemon
+    /// Start the daemon and expose a local metrics HTTP endpoint
     Start(Start),
+    /// List currently supported eBPF probes
+    Probes(Probes),
     /// Remove config and systemd service files
     Uninstall(Install),
 }
@@ -54,11 +56,20 @@ struct Start {
     config: String,
 }
 
+#[derive(Args)]
+#[clap(disable_version_flag = true)]
+struct Probes {
+    /// Whether to print the output verbosely.
+    #[clap(long, short)]
+    verbose: bool,
+}
+
 impl Cli {
     pub fn run(self) -> Result<(), Error> {
         match self.command {
             Commands::Install(c) => install::run(&c.config, &c.service),
             Commands::Start(c) => start::run(&c.config),
+            Commands::Probes(c) => probes::run(c.verbose),
             Commands::Uninstall(c) => uninstall::run(&c.config, &c.service),
         }
     }

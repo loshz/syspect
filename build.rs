@@ -1,4 +1,3 @@
-use std::path::Path;
 use std::process::Command;
 
 use libbpf_cargo::SkeletonBuilder;
@@ -10,9 +9,10 @@ fn main() {
     // Regenerate vmlinux.h
     Command::new("make").args(&["btf"]).status().unwrap();
 
-    let sys_enter_skel = Path::new("./src/bpf/sys_enter.rs");
-    SkeletonBuilder::new("./bpf/tracepoints/sys_enter.bpf.c")
+    SkeletonBuilder::new()
+        .source("./bpf/tracepoints/sys_enter.bpf.c")
+        .debug(true)
         .clang_args("-c -O2 -I./bpf")
-        .generate(&sys_enter_skel)
+        .build_and_generate("./src/bpf/sys_enter.rs")
         .unwrap();
 }

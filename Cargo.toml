@@ -11,7 +11,7 @@ keywords = ["linux", "ebpf", "monitoring", "metrics", "prometheus"]
 readme = "README.md"
 
 [dependencies]
-libbpf-rs = "0.17"
+libbpf-rs = "0.18"
 libc = "0.2"
 nix = "0.24"
 clap = { version = "3.2", default-features = false, features = ["std", "derive"] }
@@ -19,10 +19,10 @@ anyhow = "1.0"
 toml = "0.5"
 serde = { version = "1.0", features = ["derive"] }
 metrics_server = "0.8"
-tokio = { version = "1.19", features = ["macros", "rt-multi-thread", "signal", "time"] }
+tokio = { version = "1.20", features = ["macros", "rt-multi-thread", "signal", "time"] }
 log = "0.4"
 simplelog = "0.12"
-prometheus-client = "0.16"
+prometheus-client = "0.17"
 
 [build-dependencies]
-libbpf-cargo = "0.11"
+libbpf-cargo = "0.12"

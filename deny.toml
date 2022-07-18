@@ -22,10 +22,9 @@ unlicensed = "deny"
 # List of explicitly allowed licenses
 allow = [
     "Apache-2.0",
-	"BSD-2-Clause",
-	"BSD-3-Clause",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
     "MIT",
-
 ]
 # List of explicitly disallowed licenses
 deny = []
@@ -40,7 +39,9 @@ default = "deny"
 confidence-threshold = 0.8
 # Allow 1 or more licenses on a per-crate basis, so that particular licenses
 # aren't accepted for every possible crate as with the normal allow list
-exceptions = []
+exceptions = [
+    { allow = ["Unicode-DFS-2016"], name = "unicode-ident", version = "*" },
+]
 
 [bans]
 # Lint level for when multiple versions of the same crate are detected

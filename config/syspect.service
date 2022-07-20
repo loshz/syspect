@@ -1,10 +1,10 @@
 [Unit]
 Type=simple
 Description=Linux eBPF Monitoring daemon.
-ConditionFileIsExecutable=/usr/bin/lemurs
+ConditionFileIsExecutable=/usr/bin/syspect
 
 [Service]
-ExecStart=/usr/bin/lemurs start
+ExecStart=/usr/bin/syspect start
 TimeoutSec=10
 
 [Install]

@@ -5,12 +5,12 @@ use anyhow::{Context, Error};
 
 /// An example config file with defaults loaded at compile time.
 const DEFAULT_CONFIG: &str =
-    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/config/lemurs.conf"));
+    include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/config/syspect.conf"));
 
 /// A preconfigured systemd service file loaded at compile time.
 const DEFAULT_SERVICE: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/config/lemurs.service"
+    "/config/syspect.service"
 ));
 
 pub fn run(config: &str, service: &str) -> Result<(), Error> {

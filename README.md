@@ -1,18 +1,18 @@
-# Linux eBPF Monitoring Daemon (/ˈliːmərs/)
+# syspect - Linux eBPF Monitoring Daemon
 > **Note**: this is currently a side project so I can experiment with different libs. It should **NOT** be used in a production environment.
 
-[![Build Status](https://github.com/loshz/lemurs/workflows/ci/badge.svg)](https://github.com/loshz/lemurs/actions) [![GPL-3.0 licensed](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
+[![Build Status](https://github.com/loshz/syspect/workflows/ci/badge.svg)](https://github.com/loshz/syspect/actions) [![GPL-3.0 licensed](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 
 A Linux service that monitors systems via eBPF and exports data to Prometheus.
 
 ## Usage
 ```
-$ sudo lemurs --help
-lemurs 0.1.0
+$ sudo syspect --help
+syspect 0.1.0
 Linux eBPF Monitoring daemon
 
 USAGE:
-    lemurs <SUBCOMMAND>
+    syspect <SUBCOMMAND>
 
 OPTIONS:
     -h, --help       Print help information
@@ -27,7 +27,7 @@ SUBCOMMANDS:
 ```
 
 ### Config
-The default config file is located at `/etc/lemurs.conf`. A detailed example can be found [here](./config/lemurs.conf).
+The default config file is located at `/etc/syspect.conf`. A detailed example can be found [here](./config/syspect.conf).
 
 ## BPF
 TODO: document included bpf probes.

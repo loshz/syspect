@@ -4,10 +4,10 @@ use clap::{AppSettings, Args, Parser, Subcommand};
 use super::*;
 
 /// The default path for service config.
-const DEFAULT_CONFIG_PATH: &str = "/etc/lemurs.conf";
+const DEFAULT_CONFIG_PATH: &str = "/etc/syspect.conf";
 
 /// The default path for the systemd service.
-const DEFAULT_SERVICE_PATH: &str = "/usr/lib/systemd/system/lemurs.service";
+const DEFAULT_SERVICE_PATH: &str = "/usr/lib/systemd/system/syspect.service";
 
 #[derive(Parser)]
 #[clap(version, about)]

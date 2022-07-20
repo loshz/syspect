@@ -1,11 +1,11 @@
 [package]
-name = "lemurs"
+name = "syspect"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.59"
 description = "Linux eBPF Monitoring daemon"
-homepage = "https://github.com/loshz/lemurs"
-repository = "https://github.com/loshz/lemurs"
+homepage = "https://github.com/loshz/syspect"
+repository = "https://github.com/loshz/syspect"
 license = "GPL-3.0"
 keywords = ["linux", "ebpf", "monitoring", "metrics", "prometheus"]
 readme = "README.md"

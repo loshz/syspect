@@ -11,7 +11,7 @@ release:
 	cargo build --release --target ${TARGET}
 
 install: release
-	sudo cp ./target/${TARGET}/release/lemurs ${BIN}
+	sudo cp ./target/${TARGET}/release/syspect ${BIN}
 
 btf:
 	bpftool btf dump file /sys/kernel/btf/vmlinux format c > ./bpf/vmlinux.h

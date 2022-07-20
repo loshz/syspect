@@ -86,9 +86,9 @@ checksum = "fff857943da45f546682664a79488be82e69e43c1a7a2307679ab9afb3a66d2e"
 
 [[package]]
 name = "clap"
-version = "3.2.12"
+version = "3.2.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab8b79fe3946ceb4a0b1c080b4018992b8d27e9ff363644c1c9b6387c854614d"
+checksum = "ac2bd7a1eb07da9ac757c923f69373deb7bc2ba5efc951b873bcb5e693992dca"
 dependencies = [
  "bitflags",
  "clap_derive",
@@ -218,25 +218,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
-name = "lemurs"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "libbpf-cargo",
- "libbpf-rs",
- "libc",
- "log",
- "metrics_server",
- "nix",
- "prometheus-client",
- "serde",
- "simplelog",
- "tokio",
- "toml",
-]
-
-[[package]]
 name = "libbpf-cargo"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -276,9 +257,9 @@ dependencies = [
 
 [[package]]
 name = "libbpf-sys"
-version = "0.8.2+v0.8.1"
+version = "0.8.3+v0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba21fd78ad2c7e9d090754cdafb084f8e39e19fc8b040a1b7177b8c21104a5e3"
+checksum = "31a75b565b9fa61e0ca3b5bf7b7af09d8f794f66e0cfce982d44f10e81aa010c"
 dependencies = [
  "cc",
  "pkg-config",
@@ -592,18 +573,18 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.139"
+version = "1.0.140"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0171ebb889e45aa68b44aee0859b3eede84c6f5f5c228e6f140c0b2a0a46cad6"
+checksum = "fc855a42c7967b7c369eb5860f7164ef1f6f81c20c7cc1141f2a604e18723b03"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.139"
+version = "1.0.140"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc1d3230c1de7932af58ad8ffbe1d784bd55efd5a9d84ac24f69c72d83543dfb"
+checksum = "6f2122636b9fe3b81f1cb25099fcf2d3f542cdb1d45940d56c713158884a05da"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -669,6 +650,25 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "syspect"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "libbpf-cargo",
+ "libbpf-rs",
+ "libc",
+ "log",
+ "metrics_server",
+ "nix",
+ "prometheus-client",
+ "serde",
+ "simplelog",
+ "tokio",
+ "toml",
 ]
 
 [[package]]

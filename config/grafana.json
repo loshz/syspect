@@ -104,7 +104,7 @@
             "uid": "Ceqj0BU7k"
           },
           "exemplar": true,
-          "expr": "sys_enter_total{job=\"lemurs\"}",
+          "expr": "sys_enter_total{job=\"syspect\"}",
           "interval": "",
           "legendFormat": "sys_enter_total",
           "refId": "A"
@@ -127,7 +127,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Lemurs",
+  "title": "syspect",
   "uid": "gRfWJB8nk",
   "version": 3,
   "weekStart": ""

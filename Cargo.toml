@@ -22,7 +22,7 @@ metrics_server = "0.9"
 tokio = { version = "1.20", features = ["macros", "rt-multi-thread", "signal", "time"] }
 log = "0.4"
 simplelog = "0.12"
-prometheus-client = "0.17"
+prometheus-client = "0.18"
 
 [build-dependencies]
 libbpf-cargo = "0.12"

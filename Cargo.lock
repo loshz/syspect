@@ -91,11 +91,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "29e724a68d9319343bb3328c9cc2dfde263f4b3142ee1059a9980580171c954b"
 dependencies = [
  "bitflags",
- "clap_derive",
- "clap_lex",
+ "clap_derive 3.2.17",
+ "clap_lex 0.2.4",
  "indexmap",
  "once_cell",
  "textwrap",
+]
+
+[[package]]
+name = "clap"
+version = "4.0.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "335867764ed2de42325fafe6d18b8af74ba97ee0c590fa016f157535b42ab04b"
+dependencies = [
+ "bitflags",
+ "clap_derive 4.0.18",
+ "clap_lex 0.3.0",
+ "once_cell",
 ]
 
 [[package]]
@@ -112,10 +124,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "clap_derive"
+version = "4.0.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16a1b0f6422af32d5da0c58e2703320f379216ee70198241c84173a8c5ac28f3"
+dependencies = [
+ "heck 0.4.0",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "clap_lex"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2850f2f5a82cbf437dd5af4d49848fbdfc27c157c3d010345776f952765261c5"
+dependencies = [
+ "os_str_bytes",
+]
+
+[[package]]
+name = "clap_lex"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d4198f73e42b4936b35b5bb248d81d2b595ecb170da0bac7655c54eedfa8da8"
 dependencies = [
  "os_str_bytes",
 ]
@@ -219,13 +253,13 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libbpf-cargo"
-version = "0.12.0"
+version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eaf5aa8869d22f08ce73f6a39c99edced1ee8a9cf03ed3dd72c3fdfa30e3ca5e"
+checksum = "aa9bdbd32bc3fd6a2b6ca7a73cf1a4976c1da51be8367849226573348f338ec0"
 dependencies = [
  "anyhow",
  "cargo_metadata",
- "clap",
+ "clap 3.2.17",
  "libbpf-sys",
  "memmap2",
  "num_enum",
@@ -241,14 +275,14 @@ dependencies = [
 
 [[package]]
 name = "libbpf-rs"
-version = "0.18.0"
+version = "0.19.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "55e3866eeb5fbe7d4df56865d409edb8dac7a1dcc7a99570423ab71fbfbd100a"
+checksum = "ae623007dfcd01956d889e06f2c003106573158fe61e88450e9f448466d6dbed"
 dependencies = [
  "bitflags",
  "lazy_static",
  "libbpf-sys",
- "nix",
+ "nix 0.24.2",
  "num_enum",
  "strum_macros",
  "thiserror",
@@ -257,9 +291,9 @@ dependencies = [
 
 [[package]]
 name = "libbpf-sys"
-version = "0.8.3+v0.8.1"
+version = "1.0.3+v1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31a75b565b9fa61e0ca3b5bf7b7af09d8f794f66e0cfce982d44f10e81aa010c"
+checksum = "376d23644bd8f7ec2ebf1b07f9d8e6a46989bae201c6ee378b0cd486fafc0624"
 dependencies = [
  "cc",
  "pkg-config",
@@ -322,9 +356,9 @@ dependencies = [
 
 [[package]]
 name = "metrics_server"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "beb1e717a8af9873411e854f4cc53ccee136f8b2db4af5348880e280eccb3015"
+checksum = "f623db244eab53ee4d23c8c8e77a76a41c45898319dc9715183ad3cb2f0a41b4"
 dependencies = [
  "log",
  "tiny_http",
@@ -352,6 +386,20 @@ dependencies = [
  "cfg-if",
  "libc",
  "memoffset",
+]
+
+[[package]]
+name = "nix"
+version = "0.25.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e322c04a9e3440c327fca7b6c8a63e6890a32fa2ad689db972425f07e0d22abb"
+dependencies = [
+ "autocfg",
+ "bitflags",
+ "cfg-if",
+ "libc",
+ "memoffset",
+ "pin-utils",
 ]
 
 [[package]]
@@ -440,6 +488,12 @@ name = "pin-project-lite"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e0a7ae3ac2f1173085d398531c705756c94a4c56843785df85a60c1a0afac116"
+
+[[package]]
+name = "pin-utils"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
 name = "pkg-config"
@@ -688,13 +742,13 @@ name = "syspect"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "clap",
+ "clap 4.0.18",
  "libbpf-cargo",
  "libbpf-rs",
  "libc",
  "log",
  "metrics_server",
- "nix",
+ "nix 0.25.0",
  "prometheus-client",
  "serde",
  "simplelog",

@@ -96,7 +96,8 @@ pub async fn run(config: &str) -> Result<(), Error> {
         }
     }
 
-    info!("Stopping service");
+    info!("Stopping service...");
+    let _ = server.stop();
 
     Ok(())
 }

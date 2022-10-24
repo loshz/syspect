@@ -1,5 +1,5 @@
 use anyhow::Error;
-use clap::{AppSettings, Args, Parser, Subcommand};
+use clap::{Args, Parser, Subcommand};
 
 use super::*;
 
@@ -12,7 +12,6 @@ const DEFAULT_SERVICE_PATH: &str = "/usr/lib/systemd/system/syspect.service";
 #[derive(Parser)]
 #[clap(version, about)]
 #[clap(propagate_version = true)]
-#[clap(global_setting(AppSettings::DeriveDisplayOrder))]
 pub struct Cli {
     #[clap(subcommand)]
     command: Commands,

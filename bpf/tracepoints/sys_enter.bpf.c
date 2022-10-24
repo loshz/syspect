@@ -21,7 +21,7 @@ int sys_enter(struct bpf_raw_tracepoint_args *ctx) {
   regs = (struct pt_regs *)ctx->args[0];
   bpf_probe_read(&key, sizeof(key), &regs->si);
 
-  // Write key=program, value=count to the map. 
+  // Write key=program, value=count to the map.
   bpf_map_update_elem(&syscall_count, &key, &count, BPF_ANY);
 
   return 0;

@@ -30,7 +30,7 @@ SUBCOMMANDS:
 The default config file is located at `/etc/syspect.conf`. A detailed example can be found [here](./config/syspect.conf).
 
 ### Docker
-If you'd like to quickly get monitoring up and running, default Grafana and Prometheus configs have been included and can be ran using `docker compose up` from the project root dir.
+If you'd like to quickly get monitoring up and running, default Grafana and Prometheus configs have been included and can be ran using `docker compose up` from the project root dir. It assumes `syspect` is running on port 9091.
 
 ## BPF
 TODO: document included bpf probes.

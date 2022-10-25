@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -26,12 +29,18 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "left",
             "barAlignment": 0,
@@ -90,7 +99,8 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
           "mode": "none",
@@ -101,12 +111,12 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "Ceqj0BU7k"
+            "uid": "PBFA97CFB590B2093"
           },
-          "exemplar": true,
-          "expr": "sys_enter_total{job=\"syspect\"}",
-          "interval": "",
-          "legendFormat": "sys_enter_total",
+          "editorMode": "builder",
+          "expr": "sys_enter_total",
+          "legendFormat": "__auto",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -115,7 +125,7 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 35,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -129,6 +139,6 @@
   "timezone": "",
   "title": "syspect",
   "uid": "gRfWJB8nk",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }

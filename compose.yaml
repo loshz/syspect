@@ -18,5 +18,7 @@ services:
       - 3000:3000
     volumes:
       - ./config/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./config/grafana/dashboard.json:/var/lib/grafana/dashboards/syspect.json
+      - ./config/grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
       - ./config/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
 

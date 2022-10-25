@@ -10,10 +10,10 @@ const DEFAULT_CONFIG_PATH: &str = "/etc/syspect.conf";
 const DEFAULT_SERVICE_PATH: &str = "/usr/lib/systemd/system/syspect.service";
 
 #[derive(Parser)]
-#[clap(version, about)]
-#[clap(propagate_version = true)]
+#[command(version, about, long_about = None)]
+#[command(propagate_version = true)]
 pub struct Cli {
-    #[clap(subcommand)]
+    #[command(subcommand)]
     command: Commands,
 }
 
@@ -30,36 +30,36 @@ enum Commands {
 }
 
 #[derive(Args)]
-#[clap(disable_version_flag = true)]
+#[command(disable_version_flag = true)]
 struct Install {
     /// Path to the config file installation location
-    #[clap(long, short)]
-    #[clap(value_name = "PATH")]
-    #[clap(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
+    #[arg(long, short)]
+    #[arg(value_name = "PATH")]
+    #[arg(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
     config: String,
 
     /// Path to the systemd service file installation location
-    #[clap(long, short)]
-    #[clap(value_name = "PATH")]
-    #[clap(default_value_t = String::from(DEFAULT_SERVICE_PATH))]
+    #[arg(long, short)]
+    #[arg(value_name = "PATH")]
+    #[arg(default_value_t = String::from(DEFAULT_SERVICE_PATH))]
     service: String,
 }
 
 #[derive(Args)]
-#[clap(disable_version_flag = true)]
+#[command(disable_version_flag = true)]
 struct Start {
     /// Path to the config file installation location
-    #[clap(long, short)]
-    #[clap(value_name = "PATH")]
-    #[clap(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
+    #[arg(long, short)]
+    #[arg(value_name = "PATH")]
+    #[arg(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
     config: String,
 }
 
 #[derive(Args)]
-#[clap(disable_version_flag = true)]
+#[command(disable_version_flag = true)]
 struct Probes {
     /// Whether to print the output verbosely.
-    #[clap(long, short)]
+    #[arg(long, short)]
     verbose: bool,
 }
 

@@ -9,23 +9,21 @@ use prometheus_client::metrics::gauge::Gauge;
 use prometheus_client::registry::Registry;
 use tokio::{signal, time};
 
-use crate::bpf;
-use crate::config;
-use crate::helpers;
+use crate::{bpf, config, helpers};
 
 #[tokio::main]
-pub async fn run(config: &str) -> Result<(), Error> {
+pub async fn run(config_path: &str) -> Result<(), Error> {
     // Load config from file.
-    let c = config::from_file(config)?;
+    let c = config::from_file(config_path)?;
 
     // Configure system logging.
     helpers::configure_loging(&c.log_level);
+    info!("Using config: {}", config_path);
     info!(
         "Starting service: {} {}",
         crate::PKG_NAME,
         crate::PKG_VERSION
     );
-    info!("Using config: {}", config);
 
     // Remove memlock limit in order to load eBPF programs.
     helpers::remove_memlock_rlimit()?;
@@ -96,7 +94,7 @@ pub async fn run(config: &str) -> Result<(), Error> {
         }
     }
 
-    info!("Stopping service...");
+    info!("Terminating...");
     let _ = server.stop();
 
     Ok(())

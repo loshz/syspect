@@ -23,8 +23,8 @@ enum Commands {
     Install(Install),
     /// Start the daemon and expose a local metrics HTTP endpoint
     Start(Start),
-    /// List currently supported eBPF probes
-    Probes(Probes),
+    /// List currently available Kernel trace events
+    Events(Events),
     /// Remove config and systemd service files
     Uninstall(Install),
 }
@@ -57,7 +57,7 @@ struct Start {
 
 #[derive(Args)]
 #[command(disable_version_flag = true)]
-struct Probes {
+struct Events {
     /// Whether to print the output verbosely.
     #[arg(long, short)]
     verbose: bool,
@@ -68,7 +68,7 @@ impl Cli {
         match self.command {
             Commands::Install(c) => install::run(&c.config, &c.service),
             Commands::Start(c) => start::run(&c.config),
-            Commands::Probes(c) => probes::run(c.verbose),
+            Commands::Events(c) => events::run(c.verbose),
             Commands::Uninstall(c) => uninstall::run(&c.config, &c.service),
         }
     }

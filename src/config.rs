@@ -10,16 +10,16 @@ pub struct Config {
     pub metrics_host: String,
     pub metrics_port: u16,
 
-    pub bpf: Bpf,
+    pub tracing: Tracing,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Bpf {
-    pub syscalls: Syscalls,
+pub struct Tracing {
+    pub events: Events,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Syscalls {
+pub struct Events {
     pub sys_enter: bool,
 }
 
@@ -30,7 +30,7 @@ impl Config {
 }
 
 pub fn from_file(path: &str) -> Result<Config, Error> {
-    let data = fs::read_to_string(path).unwrap();
+    let data = fs::read_to_string(path).context("error opening config file")?;
     let config: Config = parse(data.as_str())?;
 
     Ok(config)
@@ -66,9 +66,9 @@ mod tests {
             metrics_host = "localhost"
             metrics_port = 9090
 
-            [bpf]
+            [tracing]
 
-            [bpf.syscalls]
+            [tracing.events]
             sys_enter = true
         "#;
 
@@ -80,7 +80,7 @@ mod tests {
             assert_eq!(c.interval, 10);
             assert_eq!(c.metrics_host, "localhost".to_owned());
             assert_eq!(c.metrics_port, 9090);
-            assert!(c.bpf.syscalls.sys_enter);
+            assert!(c.tracing.events.sys_enter);
         }
     }
 }

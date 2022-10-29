@@ -1,6 +1,6 @@
 mod app;
+mod events;
 mod install;
-mod probes;
 mod start;
 mod uninstall;
 

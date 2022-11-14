@@ -7,7 +7,7 @@ fn main() {
     println!("cargo:rerun-if-changed=./bpf/tracepoints/");
 
     // Regenerate vmlinux.h
-    Command::new("make").args(&["btf"]).status().unwrap();
+    Command::new("make").args(["btf"]).status().unwrap();
 
     SkeletonBuilder::new()
         .source("./bpf/tracepoints/sys_enter.bpf.c")

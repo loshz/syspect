@@ -1,15 +1,24 @@
 use std::time::Duration;
-use std::u64;
+use std::{u32, u64};
 
 use anyhow::{Context, Error};
 use log::info;
 use metrics_server::MetricsServer;
-use prometheus_client::encoding::text::encode;
+use prometheus_client::encoding::text::{encode, Encode};
+use prometheus_client::metrics::family::Family;
 use prometheus_client::metrics::gauge::Gauge;
 use prometheus_client::registry::Registry;
 use tokio::{signal, time};
 
 use crate::{bpf, config, helpers};
+
+#[derive(Clone, Hash, PartialEq, Eq, Encode)]
+struct Labels {
+    // Process ID
+    pid: u32,
+    // Process name
+    pname: String,
+}
 
 #[tokio::main]
 pub async fn run(config_path: &str) -> Result<(), Error> {
@@ -31,17 +40,17 @@ pub async fn run(config_path: &str) -> Result<(), Error> {
 
     // Configure metrics
     let mut registry = Registry::default();
-    let gauge: Gauge = Gauge::default();
+    let sys_enter_total = Family::<Labels, Gauge>::default();
     registry.register(
         "sys_enter_total",
         "Number of syscall entries",
-        gauge.clone(),
+        sys_enter_total.clone(),
     );
 
     // Expose the Prometheus metrics.
     let addr = c.metrics_address();
     let server = MetricsServer::http(addr.as_str());
-    info!("Metrics exposed on: http://{}", addr.as_str());
+    info!("Metrics exposed on: http://{}/metrics", addr.as_str());
 
     // Load the eBPF program and attach to the tracepoint.
     let sys_enter = bpf::sys_enter::SysEnterSkelBuilder::default();
@@ -50,10 +59,7 @@ pub async fn run(config_path: &str) -> Result<(), Error> {
     tracepoint
         .attach()
         .context("failed to attach to ebpf tracepoint")?;
-    info!("Running eBPF programs every {}s", c.interval);
-
-    // Keep track of the current count.
-    let mut current = 0;
+    info!("Tracing Kernel events every {}s", c.interval);
 
     loop {
         // Listen for CTRL+C signal events or sleep.
@@ -62,36 +68,38 @@ pub async fn run(config_path: &str) -> Result<(), Error> {
             _ = signal::ctrl_c() => break
         }
 
-        // Lookup the value saved to the bpf map.
-        // This will return a Result<Option<Vec<u8>>>
-        let b: &[u8; 4] = &[0, 0, 0, 0];
-        let syscall_count = match tracepoint
-            .maps()
-            .syscall_count()
-            .lookup(b, libbpf_rs::MapFlags::ANY)
-        {
-            Ok(count) => count,
-            Err(e) => return Err(Error::new(e)),
-        };
+        for key in tracepoint.maps().syscall_count().keys() {
+            let syscall_count = match tracepoint
+                .maps()
+                .syscall_count()
+                .lookup(&key, libbpf_rs::MapFlags::ANY)
+            {
+                Ok(count) => count,
+                Err(e) => return Err(Error::new(e)),
+            };
 
-        // Check that count contains Some value.
-        // Continue if no count.
-        if let Some(total) = syscall_count {
-            if !total.is_empty() {
-                // total is a &[u8; 8] containing the little-endian representation of a 64 bit number,
-                // so we need to convert to u64 in order to get the count.
+            // Check that count contains Some value.
+            // TODO: https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&gist=eaac5faf4aae5f88fd32f0dab784336a
+            if let Some(total) = syscall_count {
+                let pname = String::from_utf8_lossy(&key[0..16]);
+                let mut pid = [0u8; 4];
+                pid.clone_from_slice(&key[16..20]);
                 let count = u64::from_le_bytes(total.try_into().unwrap());
+                println!("@[{}, {:?}]: {}", pname, u32::from_le_bytes(pid), count);
 
-                // Update the gauge and current count value.
-                gauge.set(count - current);
-                current = count;
-
-                // Encode the current registry and update the metrics server.
-                let mut encoded = Vec::new();
-                encode(&mut encoded, &registry).unwrap();
-                server.update(encoded);
+                sys_enter_total
+                    .get_or_create(&Labels {
+                        pid: u32::from_le_bytes(pid),
+                        pname: pname.to_string(),
+                    })
+                    .set(count);
             }
         }
+
+        // Encode the current registry and update the metrics server.
+        let mut encoded = Vec::new();
+        encode(&mut encoded, &registry).unwrap();
+        server.update(encoded);
     }
 
     info!("Terminating...");

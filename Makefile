@@ -18,4 +18,4 @@ btf:
 
 bpf: btf
 	mkdir -p ${BPF_OUT}
-	clang -c -O2 -target bpf -I ./bpf/ -o ${BPF_OUT}/probe.bpf.o ./bpf/probe.bpf.c
+	clang -c -g -O2 -target bpf -I ./bpf/ -o ${BPF_OUT}/probe.bpf.o ./bpf/probe.bpf.c

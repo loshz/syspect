@@ -1,27 +1,43 @@
 #include "vmlinux.h"
 
+#include <bpf/bpf_core_read.h>
 #include <bpf/bpf_helpers.h>
 
+struct map_key {
+  char proc_name[TASK_COMM_LEN];
+  pid_t pid;
+} __attribute__((packed));
+
+// TODO: use LRU?
 struct {
-  __uint(type, BPF_MAP_TYPE_ARRAY);
-  __type(key, u32);
+  __uint(type, BPF_MAP_TYPE_HASH);
+  __uint(max_entries, 8192);
+  __type(key, struct map_key);
   __type(value, u64);
-  __uint(max_entries, 1);
 } syscall_count SEC(".maps");
 
-// This tracepoint is defined in:
-// /sys/kernel/debug/tracing/events/raw_syscalls/sys_enter
 SEC("tracepoint/raw_syscalls/sys_enter")
-int sys_enter() {
-  u32 key = 0;
-  u64 init_val = 1, *count;
+int sys_enter(struct trace_event_raw_sys_enter *args) {
+  struct task_struct *task = (struct task_struct *)bpf_get_current_task();
 
-  count = bpf_map_lookup_elem(&syscall_count, &key);
+  /* Setup key */
+  struct map_key key;
+  __builtin_memcpy(key.proc_name, BPF_CORE_READ(task, comm),
+                   sizeof(task->comm));
+  key.pid = BPF_CORE_READ(task, pid);
+
+  /* Update count */
+  int *count = bpf_map_lookup_elem(&syscall_count, &key);
   if (!count) {
-    bpf_map_update_elem(&syscall_count, &key, &init_val, BPF_ANY);
-    return 0;
+    u64 zero = 0;
+    bpf_map_update_elem(&syscall_count, &key, &zero, 0);
+    /* bpf_printk("(%s, %d) = 0", key.proc_name, key.syscall_nr); */
+  } else {
+    (*count)++;
+    /* bpf_printk("(%s, %d) = %d", key.proc_name, key.syscall_nr, *count); */
   }
-  __sync_fetch_and_add(count, 1);
 
   return 0;
 }
+
+char LICENSE[] SEC("license") = "Dual BSD/GPL";

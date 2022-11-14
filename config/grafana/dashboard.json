@@ -33,6 +33,7 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -115,12 +116,12 @@
           },
           "editorMode": "builder",
           "expr": "sys_enter_total",
-          "legendFormat": "__auto",
+          "legendFormat": "[{{pid}}] {{pname}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "syscalls",
+      "title": "Total syscalls by process",
       "type": "timeseries"
     }
   ],

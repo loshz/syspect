@@ -12,7 +12,7 @@ fn main() {
     SkeletonBuilder::new()
         .source("./bpf/tracepoints/sys_enter.bpf.c")
         .debug(true)
-        .clang_args("-c -O2 -I./bpf")
+        .clang_args("-c -g -O2 -I./bpf")
         .build_and_generate("./src/bpf/sys_enter.rs")
         .unwrap();
 }

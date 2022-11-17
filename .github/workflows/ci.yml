@@ -14,10 +14,10 @@ env:
   LIBBPF_VERSION: 1.0.1
 
 jobs:
-  rust:
+  test:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -32,11 +32,6 @@ jobs:
           sudo mkdir -p /usr/include/bpf/
           curl -sSL "https://github.com/libbpf/libbpf/archive/refs/tags/v${{ env.LIBBPF_VERSION }}.tar.gz" -o /tmp/libbpf.tar.gz
           sudo tar -xvf /tmp/libbpf.tar.gz --strip-components=2 -C /usr/include/bpf "libbpf-${{ env.LIBBPF_VERSION }}/src/bpf_helper_defs.h" "libbpf-${{ env.LIBBPF_VERSION }}/src/bpf_helpers.h"
-
-      # Run security audit checks.
-      - run: |
-          cargo install --locked cargo-deny
-          cargo deny check
 
       # Lint code and run tests.
       - run: |

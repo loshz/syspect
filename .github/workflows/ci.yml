@@ -33,9 +33,6 @@ jobs:
           curl -sSL "https://github.com/libbpf/libbpf/archive/refs/tags/v${{ env.LIBBPF_VERSION }}.tar.gz" -o /tmp/libbpf.tar.gz
           sudo tar -xvf /tmp/libbpf.tar.gz --strip-components=2 -C /usr/include/bpf "libbpf-${{ env.LIBBPF_VERSION }}/src/bpf_helper_defs.h" "libbpf-${{ env.LIBBPF_VERSION }}/src/bpf_helpers.h"
 
-      # Generate BTF headers.
-      - run: make btf
-      
       # Run security audit checks.
       - run: |
           cargo install --locked cargo-deny

@@ -8,7 +8,6 @@ struct map_key {
   pid_t pid;
 } __attribute__((packed));
 
-// TODO: use LRU?
 struct {
   __uint(type, BPF_MAP_TYPE_HASH);
   __uint(max_entries, 8192);

@@ -31,6 +31,10 @@ jobs:
           curl -sSL "https://github.com/libbpf/libbpf/archive/refs/tags/v${{ env.LIBBPF_VERSION }}.tar.gz" -o /tmp/libbpf.tar.gz
           sudo tar -xvf /tmp/libbpf.tar.gz --strip-components=2 -C /usr/include/bpf "libbpf-${{ env.LIBBPF_VERSION }}/src/bpf_helper_defs.h" "libbpf-${{ env.LIBBPF_VERSION }}/src/bpf_helpers.h"
 
+      - run: make btf
+      - run: cat bpf/vmlinux.h | grep TASK_COMM
+      - run: which bpftool
+
       # Lint code and run tests.
       - run: |
           cargo fmt -- --check

@@ -29,7 +29,7 @@ jobs:
       - run: |
           sudo mkdir -p /usr/include/bpf/
           curl -sSL "https://github.com/libbpf/libbpf/archive/refs/tags/v${{ env.LIBBPF_VERSION }}.tar.gz" -o /tmp/libbpf.tar.gz
-          sudo tar -xvf /tmp/libbpf.tar.gz --strip-components=2 -C /usr/include/bpf "libbpf-${{ env.LIBBPF_VERSION }}/src/*.h"
+          sudo tar -xvf /tmp/libbpf.tar.gz --strip-components=2 -C /usr/include/bpf --wildcards "libbpf-${{ env.LIBBPF_VERSION }}/src/*.h"
           ls -al /usr/include/bpf
 
       # Lint code and run tests.

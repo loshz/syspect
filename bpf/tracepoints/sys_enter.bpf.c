@@ -3,6 +3,8 @@
 #include <bpf/bpf_core_read.h>
 #include <bpf/bpf_helpers.h>
 
+#define TASK_COMM_LEN 16
+
 struct map_key {
   char proc_name[TASK_COMM_LEN];
   pid_t pid;

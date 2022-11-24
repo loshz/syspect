@@ -17,7 +17,7 @@ pub fn remove_memlock_rlimit() -> Result<(), Error> {
 }
 
 /// Configure structured logging for use when running as a system service.
-pub fn configure_loging(level: &str) {
+pub fn configure_loging(level: &str, syslog: bool) {
     // Parse given log level and default to info.
     let max_lvl = match level.to_lowercase().as_str() {
         "debug" => LevelFilter::Debug,
@@ -26,8 +26,13 @@ pub fn configure_loging(level: &str) {
         _ => LevelFilter::Info,
     };
 
-    // TODO: configure timestamp.
-    let config = ConfigBuilder::new().build();
+    // Configure logger dependent on syslog formatting.
+    let config = match syslog {
+        true => ConfigBuilder::new()
+            .set_time_level(LevelFilter::Off)
+            .build(),
+        false => Config::default(),
+    };
 
     TermLogger::init(max_lvl, config, TerminalMode::Mixed, ColorChoice::Never).unwrap();
 }

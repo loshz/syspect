@@ -53,6 +53,10 @@ struct Start {
     #[arg(value_name = "PATH")]
     #[arg(default_value_t = String::from(DEFAULT_CONFIG_PATH))]
     config: String,
+
+    /// Format logger for syslog
+    #[arg(long)]
+    syslog: bool,
 }
 
 #[derive(Args)]
@@ -67,7 +71,7 @@ impl Cli {
     pub fn run(self) -> Result<(), Error> {
         match self.command {
             Commands::Install(c) => install::run(&c.config, &c.service),
-            Commands::Start(c) => start::run(&c.config),
+            Commands::Start(c) => start::run(&c.config, c.syslog),
             Commands::Events(c) => events::run(c.verbose),
             Commands::Uninstall(c) => uninstall::run(&c.config, &c.service),
         }

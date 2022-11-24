@@ -21,12 +21,12 @@ struct Labels {
 }
 
 #[tokio::main]
-pub async fn run(config_path: &str) -> Result<(), Error> {
+pub async fn run(config_path: &str, syslog: bool) -> Result<(), Error> {
     // Load config from file.
     let c = config::from_file(config_path)?;
 
     // Configure system logging.
-    helpers::configure_loging(&c.log_level);
+    helpers::configure_loging(&c.log_level, syslog);
     info!("Using config: {}", config_path);
     info!(
         "Starting service: {} {}",

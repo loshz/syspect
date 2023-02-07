@@ -27,7 +27,7 @@ fn main() {
     process::exit(match cli.run() {
         Ok(_) => 0,
         Err(err) => {
-            eprintln!("error: {:?}", err);
+            eprintln!("error: {err}");
             1
         }
     });

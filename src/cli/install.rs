@@ -16,11 +16,11 @@ const DEFAULT_SERVICE: &str = include_str!(concat!(
 pub fn run(config: &str, service: &str) -> Result<(), Error> {
     // Write config file.
     write_file(config, DEFAULT_CONFIG).context("error writing config file")?;
-    println!("Default config saved to: {}", config);
+    println!("Default config saved to: {config}");
     //
     // Write systemd service file.
     write_file(service, DEFAULT_SERVICE).context("error writing systemd service file")?;
-    println!("systemd service saved to: {}", service);
+    println!("systemd service saved to: {service}");
 
     Ok(())
 }

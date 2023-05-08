@@ -1,13 +1,13 @@
 # Build config.
 BIN_DIR ?= ./bin
 BPF_OUT ?= ./pkg/bpf
-BUILD_NUMBER ?= dev
+BUILD_NUMBER ?= 0.1.0
 
 .PHONY: go/build go/lint go/test bpf/btf bpf/build
 
 go/build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-	    --ldflags="-X github.com/loshz/syspect/pkg/version.Build=$(BUILD_NUMBER)" \
+	    --ldflags="-X github.com/loshz/syspect/pkg/version.Version=$(BUILD_NUMBER)" \
 		-o $(BIN_DIR)/syspect ./cmd/...
 
 go/lint:

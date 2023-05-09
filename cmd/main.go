@@ -16,13 +16,13 @@ func main() {
 	var cmd *cli.Command
 
 	switch os.Args[1] {
-	case "install":
+	case cli.CommandInstall:
 		cmd = cli.NewInstallCommand()
-	case "start":
+	case cli.CommandStart:
 		cmd = cli.NewStartCommand()
-	case "events":
+	case cli.CommandEvents:
 		cmd = cli.NewEventsCommand()
-	case "uninstall":
+	case cli.CommandUninstall:
 		cmd = cli.NewUninstallCommand()
 	case "-V", "--version":
 		fmt.Printf("syspect %s\n", version.Version)

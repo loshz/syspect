@@ -1,0 +1,15 @@
+run:
+  timeout: 2m
+  skip-dirs-use-default: true
+
+linters:
+  disable-all: true
+
+  # https://golangci-lint.run/usage/linters/
+  enable:
+    - errcheck
+    - gofmt
+    - gosimple
+    - govet
+    - staticcheck
+    - unused

@@ -4,9 +4,13 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/loshz/syspect/pkg/config"
 )
 
-const startUsage = `Start the daemon and expose a local metrics HTTP endpoint
+const (
+	CommandStart = "start"
+	startUsage   = `Start the daemon and expose a local metrics HTTP endpoint
 
 USAGE:
   syspect start [OPTIONS]
@@ -14,21 +18,28 @@ USAGE:
 OPTIONS:
   -c, --config <PATH>   Path to the config file startation location [default: /etc/syspect.conf]
   -h, --help            Print help information`
+)
 
 func NewStartCommand() *Command {
-	cmd := &Command{
-		flags:   flag.NewFlagSet("start", flag.ExitOnError),
-		Execute: start,
-	}
+	fs := flag.NewFlagSet(CommandStart, flag.ExitOnError)
 
-	cmd.flags.Usage = func() {
+	var cfg string
+	fs.StringVar(&cfg, "c", config.DefaultConfig, "")
+	fs.StringVar(&cfg, "config", config.DefaultConfig, "")
+
+	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, startUsage)
 	}
 
-	return cmd
+	return &Command{
+		flags:   fs,
+		Execute: start(&cfg),
+	}
 }
 
-func start(cmd *Command, args []string) error {
-	fmt.Println("start")
-	return nil
+func start(cfg *string) ExecuteFunc {
+	return func(cmd *Command, args []string) error {
+		fmt.Printf("Config: %v\n", cfg)
+		return nil
+	}
 }

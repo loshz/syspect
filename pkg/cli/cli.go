@@ -9,12 +9,8 @@ type Command struct {
 	Execute ExecuteFunc
 }
 
-func (c *Command) Init(args []string) error {
-	return c.flags.Parse(args)
-}
-
-func (c *Command) Called() bool {
-	return c.flags.Parsed()
+func (c *Command) Init(args []string) {
+	_ = c.flags.Parse(args)
 }
 
 func (c *Command) Run() error {

@@ -13,5 +13,4 @@ COMMANDS:
 
 OPTIONS:
   -h, --help     Print command-specific usage
-  -V, --version  Print version information
-`
+  -V, --version  Print version information`

@@ -6,7 +6,9 @@ import (
 	"os"
 )
 
-const eventsUsage = `List currently available Kernel trace events
+const (
+	CommandEvents = "events"
+	eventsUsage   = `List currently available Kernel trace events
 
 USAGE:
   syspect events [OPTIONS]
@@ -14,21 +16,28 @@ USAGE:
 OPTIONS:
   -v, --verbose  Whether to print the output verbosely
   -h, --help     Print help information`
+)
 
 func NewEventsCommand() *Command {
-	cmd := &Command{
-		flags:   flag.NewFlagSet("events", flag.ExitOnError),
-		Execute: events,
-	}
+	fs := flag.NewFlagSet(CommandEvents, flag.ExitOnError)
 
-	cmd.flags.Usage = func() {
+	var verbose bool
+	fs.BoolVar(&verbose, "v", false, "")
+	fs.BoolVar(&verbose, "verbose", false, "")
+
+	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, eventsUsage)
 	}
 
-	return cmd
+	return &Command{
+		flags:   fs,
+		Execute: events(&verbose),
+	}
 }
 
-func events(cmd *Command, args []string) error {
-	fmt.Println("events")
-	return nil
+func events(verbose *bool) ExecuteFunc {
+	return func(cmd *Command, args []string) error {
+		fmt.Printf("Verbose: %v\n", verbose)
+		return nil
+	}
 }

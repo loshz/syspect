@@ -16,34 +16,53 @@ USAGE:
   syspect install [OPTIONS]
 
 OPTIONS:
-  -c, --config <PATH>   Path to the config file installation location [default: /etc/syspect.conf]
-  -s, --service <PATH>  Path to the systemd service file installation location [default: /usr/lib/systemd/system/syspect.service]
+  -c, --config <PATH>   Path to the config file installation location
+  -s, --service <PATH>  Path to the systemd service file installation location
   -h, --help            Print help information`
 )
 
-func NewInstallCommand() *Command {
+func NewInstallCommand(args []string) RunFunc {
 	fs := flag.NewFlagSet(CommandInstall, flag.ExitOnError)
-
-	var cfg, svc string
-	fs.StringVar(&cfg, "c", config.DefaultConfig, "")
-	fs.StringVar(&cfg, "config", config.DefaultConfig, "")
-	fs.StringVar(&svc, "s", config.DefaultSystemd, "")
-	fs.StringVar(&svc, "service", config.DefaultSystemd, "")
 
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, installUsage)
 	}
 
-	return &Command{
-		flags:   fs,
-		Execute: install(&cfg, &svc),
+	var cfg, svc string
+	fs.StringVar(&cfg, "c", config.DefaultConfigPath, "")
+	fs.StringVar(&cfg, "config", config.DefaultConfigPath, "")
+	fs.StringVar(&svc, "s", config.DefaultSystemdPath, "")
+	fs.StringVar(&svc, "service", config.DefaultSystemdPath, "")
+	_ = fs.Parse(args)
+
+	return install(cfg, svc)
+}
+
+func install(cfg, svc string) RunFunc {
+	return func() error {
+		// Write default config.
+		if err := writeFile(cfg, config.DefaultConfig.String()); err != nil {
+			return fmt.Errorf("error writing systemd service file: %w", err)
+		}
+		fmt.Println("Default config saved to:", cfg)
+
+		// Write systemd service file.
+		if err := writeFile(svc, config.DefaultSystemd); err != nil {
+			return fmt.Errorf("error writing systemd service file: %w", err)
+		}
+		fmt.Println("systemd service saved to:", svc)
+
+		return nil
 	}
 }
 
-func install(cfg, svc *string) ExecuteFunc {
-	return func(cmd *Command, args []string) error {
-		fmt.Printf("Config: %v\n", cfg)
-		fmt.Printf("Service: %v\n", svc)
-		return nil
+func writeFile(path, data string) error {
+	f, err := os.Create(path)
+	if err != nil {
+		return err
 	}
+	defer f.Close()
+
+	_, err = f.WriteString(data)
+	return err
 }

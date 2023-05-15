@@ -16,30 +16,28 @@ USAGE:
   syspect start [OPTIONS]
 
 OPTIONS:
-  -c, --config <PATH>   Path to the config file startation location [default: /etc/syspect.conf]
+  -c, --config <PATH>   Path to the config file startation location
   -h, --help            Print help information`
 )
 
-func NewStartCommand() *Command {
+func NewStartCommand(args []string) RunFunc {
 	fs := flag.NewFlagSet(CommandStart, flag.ExitOnError)
-
-	var cfg string
-	fs.StringVar(&cfg, "c", config.DefaultConfig, "")
-	fs.StringVar(&cfg, "config", config.DefaultConfig, "")
 
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, startUsage)
 	}
 
-	return &Command{
-		flags:   fs,
-		Execute: start(&cfg),
-	}
+	var cfg string
+	fs.StringVar(&cfg, "c", config.DefaultConfigPath, "")
+	fs.StringVar(&cfg, "config", config.DefaultConfigPath, "")
+	_ = fs.Parse(args)
+
+	return start(cfg)
 }
 
-func start(cfg *string) ExecuteFunc {
-	return func(cmd *Command, args []string) error {
-		fmt.Printf("Config: %v\n", cfg)
+func start(cfg string) RunFunc {
+	return func() error {
+		fmt.Printf("Config: %s\n", cfg)
 		return nil
 	}
 }

@@ -11,28 +11,39 @@ import (
 func main() {
 	if len(os.Args) < 2 {
 		usage()
+		os.Exit(2)
 	}
 
-	var cmd *cli.Command
+	var run cli.RunFunc
 
 	switch os.Args[1] {
 	case cli.CommandInstall:
-		cmd = cli.NewInstallCommand()
+		run = cli.NewInstallCommand(os.Args[2:])
 	case cli.CommandStart:
-		cmd = cli.NewStartCommand()
+		run = cli.NewStartCommand(os.Args[2:])
 	case cli.CommandEvents:
-		cmd = cli.NewEventsCommand()
+		run = cli.NewEventsCommand(os.Args[2:])
 	case cli.CommandUninstall:
-		cmd = cli.NewUninstallCommand()
+		run = cli.NewUninstallCommand(os.Args[2:])
 	case "-V", "--version":
 		fmt.Printf("syspect %s\n", version.Version)
 		os.Exit(0)
+	case "-h", "--help":
+		usage()
+		os.Exit(0)
 	default:
 		usage()
+		os.Exit(2)
 	}
 
-	cmd.Init(os.Args[2:])
-	if err := cmd.Run(); err != nil {
+	// Check if root.
+	if os.Geteuid() != 0 {
+		fmt.Fprintln(os.Stderr, "not running as root")
+		//os.Exit(1)
+	}
+
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
@@ -40,5 +51,4 @@ func main() {
 func usage() {
 	fmt.Printf("syspect %s\n", version.Version)
 	fmt.Println(cli.Usage)
-	os.Exit(1)
 }

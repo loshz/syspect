@@ -18,25 +18,23 @@ OPTIONS:
   -h, --help     Print help information`
 )
 
-func NewEventsCommand() *Command {
+func NewEventsCommand(args []string) RunFunc {
 	fs := flag.NewFlagSet(CommandEvents, flag.ExitOnError)
-
-	var verbose bool
-	fs.BoolVar(&verbose, "v", false, "")
-	fs.BoolVar(&verbose, "verbose", false, "")
 
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stderr, eventsUsage)
 	}
 
-	return &Command{
-		flags:   fs,
-		Execute: events(&verbose),
-	}
+	var verbose bool
+	fs.BoolVar(&verbose, "v", false, "")
+	fs.BoolVar(&verbose, "verbose", false, "")
+	_ = fs.Parse(args)
+
+	return events(verbose)
 }
 
-func events(verbose *bool) ExecuteFunc {
-	return func(cmd *Command, args []string) error {
+func events(verbose bool) RunFunc {
+	return func() error {
 		fmt.Printf("Verbose: %v\n", verbose)
 		return nil
 	}

@@ -21,4 +21,3 @@ bpf/btf:
 
 bpf/build: bpf/btf
 	mkdir -p ${BPF_OUT}
-	clang -c -g -O2 -target bpf -I ./bpf/ -o ${BPF_OUT}/probe.bpf.o ./bpf/probe.bpf.c

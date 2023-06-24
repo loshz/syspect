@@ -1,40 +1,45 @@
 name: ci
 
 on:
-  push:
-    branches:
-      - main
-    tags:        
-      - '*'
   pull_request:
-    branches:
-      - main
+    branches: ["main"]
+  push:
+    branches: ["main"]
+    tags: ["*"]
 
 env:
-  LIBBPF_VERSION: 1.0.1
+  LIBBPF_VERSION: 1.2.0
 
 jobs:
-  test:
+  tests:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version-file: 'go.mod'
+
+    # Run unit tests and linters.
+    - uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+        skip-cache: true
+    - run: make go/test
+
+  bpf:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
 
       # Install clang and required tooling.
-      - run: sudo apt update -y && sudo apt install -y clang-14 libelf-dev
+      - run: sudo apt update -y && sudo apt install -y clang-14 libelf-dev llvm
 
       # Install libbpf.
       - run: |
-          sudo mkdir -p /usr/include/bpf/
           curl -sSL "https://github.com/libbpf/libbpf/archive/refs/tags/v${{ env.LIBBPF_VERSION }}.tar.gz" -o /tmp/libbpf.tar.gz
+          sudo mkdir -p /usr/include/bpf/
           sudo tar -xvf /tmp/libbpf.tar.gz --strip-components=2 -C /usr/include/bpf --wildcards "libbpf-${{ env.LIBBPF_VERSION }}/src/*.h"
 
-      # Lint code and run tests.
-      - run: |
-          cargo fmt -- --check
-          cargo clippy --tests -- --no-deps -D warnings
-
-      # Run all tests.
-      - run: cargo test --no-fail-fast --all-features
+      # Generate BPF and check output for diffs.
+      - run: make bpf/build
+      - run: git diff --exit-code ./pkg/bpf/*.go

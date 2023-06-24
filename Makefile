@@ -1,21 +1,22 @@
-BIN ?= /usr/bin
-BPF_OUT ?= ./target/bpf
-TARGET ?= x86_64-unknown-linux-gnu
+BIN_DIR ?= ./bin
+BUILD_NUMBER ?= 0.1.0
+GO_TEST_FLAGS ?= -v
 
-.PHONY: build release install btf bpf
+.PHONY: go/build go/lint go/test bpf/btf bpf/build
 
-build:
-	cargo build --target ${TARGET}
+go/build:
+	@CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+	    --ldflags="-X github.com/loshz/syspect/pkg/version.Version=$(BUILD_NUMBER)" \
+		-o $(BIN_DIR)/syspect ./cmd/...
 
-release:
-	cargo build --release --target ${TARGET}
+go/lint:
+	@golangci-lint run --config .golangci.yml
 
-install: release
-	sudo cp ./target/${TARGET}/release/syspect ${BIN}
+go/test:
+	@go test $(GO_TEST_FLAGS) $(shell find ./pkg/ -mindepth 1 -type d | grep -v bpf) ./cmd/...
 
-btf:
-	bpftool btf dump file /sys/kernel/btf/vmlinux format c > ./bpf/vmlinux.h
+bpf/btf:
+	@bpftool btf dump file /sys/kernel/btf/vmlinux format c > ./bpf/vmlinux.h
 
-bpf: btf
-	mkdir -p ${BPF_OUT}
-	clang -c -g -O2 -target bpf -I ./bpf/ -o ${BPF_OUT}/probe.bpf.o ./bpf/probe.bpf.c
+bpf/build: bpf/btf
+	@go generate ./pkg/bpf/

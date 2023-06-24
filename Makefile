@@ -1,6 +1,6 @@
 BIN_DIR ?= ./bin
-BPF_OUT ?= ./pkg/bpf
 BUILD_NUMBER ?= 0.1.0
+GO_TEST_FLAGS ?= -v
 
 .PHONY: go/build go/lint go/test bpf/btf bpf/build
 
@@ -13,11 +13,10 @@ go/lint:
 	@golangci-lint run --config .golangci.yml
 
 go/test:
-	@go test $(GO_TEST_FLAGS) ./...
+	@go test $(GO_TEST_FLAGS) $(shell go list ./... | grep -v pkg/bpf)
 
 bpf/btf:
 	@bpftool btf dump file /sys/kernel/btf/vmlinux format c > ./bpf/vmlinux.h
 
 bpf/build: bpf/btf
-	@mkdir -p ${BPF_OUT}
 	@go generate ./pkg/bpf/

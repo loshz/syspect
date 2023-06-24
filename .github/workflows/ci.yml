@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v3
 
       # Install clang and required tooling.
-      - run: sudo apt update -y && sudo apt install -y clang-14 libelf-dev
+      - run: sudo apt update -y && sudo apt install -y clang-14 libelf-dev lldb lld
 
       # Install libbpf.
       - run: |

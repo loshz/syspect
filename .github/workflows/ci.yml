@@ -24,7 +24,7 @@ jobs:
       with:
         version: latest
         skip-cache: true
-    - run: go list ./... | grep -v pkg/bpf
+    - run: make bpf/build
     - run: make go/test
 
   bpf:

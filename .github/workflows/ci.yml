@@ -24,7 +24,6 @@ jobs:
       with:
         version: latest
         skip-cache: true
-    - run: make bpf/build
     - run: make go/test
 
   bpf:

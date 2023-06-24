@@ -13,7 +13,7 @@ go/lint:
 	@golangci-lint run --config .golangci.yml
 
 go/test:
-	@go test $(GO_TEST_FLAGS) $(shell go list ./... | grep -v pkg/bpf)
+	@go test $(GO_TEST_FLAGS) $(shell find ./pkg/ -mindepth 1 -type d | grep -v bpf) ./cmd/...
 
 bpf/btf:
 	@bpftool btf dump file /sys/kernel/btf/vmlinux format c > ./bpf/vmlinux.h

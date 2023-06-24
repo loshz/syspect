@@ -20,4 +20,4 @@ bpf/btf:
 
 bpf/build: bpf/btf
 	@mkdir -p ${BPF_OUT}
-	@go generate
+	@go generate ./pkg/bpf/

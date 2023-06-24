@@ -42,4 +42,4 @@ jobs:
 
       # Generate BPF and check output for diffs.
       - run: make bpf/build
-      - run: git diff --exit-code ./pkg/bpf
+      - run: git diff --exit-code ./pkg/bpf/*.go

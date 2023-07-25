@@ -8,19 +8,19 @@ A Linux service that monitors systems via eBPF and exports data to Prometheus.
 ## Usage
 ```
 $ sudo syspect --help
-Linux eBPF Monitoring daemon
+Linux Monitoring Daemon
 
-Usage: syspect <COMMAND>
+USAGE:
+  syspect <COMMAND>
 
-Commands:
-  install    Install default config and systemd service files
-  start      Start the daemon and expose a local metrics HTTP endpoint
-  events     List currently available Kernel trace events
-  uninstall  Remove config and systemd service files
-  help       Print this message or the help of the given subcommand(s)
+COMMANDS:
+  install        Install default config and systemd service files
+  start          Start the daemon and expose a local metrics HTTP endpoint
+  events         List currently available Kernel trace events
+  uninstall      Remove config and systemd service files
 
-Options:
-  -h, --help     Print help information
+OPTIONS:
+  -h, --help     Print command-specific usage
   -V, --version  Print version information
 ```
 

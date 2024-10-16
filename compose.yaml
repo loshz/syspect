@@ -1,17 +1,15 @@
 services:
   prometheus:
-    image: prom/prometheus:v2.39.1
+    image: prom/prometheus:v2.54.1
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
-    network_mode: "host"
     ports:
       - 9090:9090
     volumes:
       - ./config/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
 
   grafana:
-    image: grafana/grafana:9.2.1
-    network_mode: "host"
+    image: grafana/grafana:11.2.2
     depends_on:
       - prometheus
     ports:

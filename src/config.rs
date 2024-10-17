@@ -6,12 +6,6 @@ use crate::Error;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    /// The level at which logs should be omitted.
-    pub log_level: String,
-
-    /// Format logger for syslog.
-    pub syslog: bool,
-
     /// The host:port address to serve metrcis on.
     pub metrics_addr: String,
 
@@ -30,7 +24,7 @@ pub struct Tracing {
 
 impl Config {
     pub fn from_file(path: &str) -> Result<Config, Error> {
-        let data = fs::read_to_string(path).map_err(Error::IO)?;
+        let data = fs::read_to_string(path).map_err(|e| Error::Config(e.to_string()))?;
         let config = Self::parse(data.as_str())?;
         Ok(config)
     }
@@ -69,8 +63,6 @@ mod tests {
     #[test]
     fn test_parse_success() {
         let toml_str = r#"
-            log_level = "info"
-            syslog = true
             metrics_addr = "localhost:9090"
 
             [tracing]
@@ -79,8 +71,6 @@ mod tests {
         "#;
 
         let config = Config::parse(toml_str).unwrap();
-        assert_eq!(&config.log_level, "info");
-        assert!(config.syslog);
         assert_eq!(&config.metrics_addr, "localhost:9090");
         assert_eq!(config.tracing.interval, 10);
         assert_eq!(&config.tracing.events, &["sys_enter"]);

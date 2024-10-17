@@ -31,26 +31,26 @@ enum Commands {
 #[command(disable_version_flag = true)]
 struct Install {
     /// Config file location
-    #[arg(long, short, value_name = "PATH", default_value_t = String::from(DEFAULT_CONFIG_PATH))]
+    #[arg(long, short, value_name = "PATH", default_value_t = DEFAULT_CONFIG_PATH.into())]
     config: String,
 
     /// systemd service file location
-    #[arg(long, short, value_name = "PATH", default_value_t = String::from(DEFAULT_SERVICE_PATH))]
+    #[arg(long, short, value_name = "PATH", default_value_t = DEFAULT_SERVICE_PATH.into())]
     service: String,
 }
 
 #[derive(Args)]
 #[command(disable_version_flag = true)]
 struct Start {
-    /// Path to the config file installation location
-    #[arg(long, short, value_name = "PATH", default_value_t = String::from(DEFAULT_CONFIG_PATH))]
+    /// Config file location
+    #[arg(long, short, value_name = "PATH", default_value_t = DEFAULT_CONFIG_PATH.into())]
     config: String,
 }
 
 #[derive(Args)]
 #[command(disable_version_flag = true)]
 struct Events {
-    /// Whether to print the output verbosely.
+    /// Whether to print the output verbosely
     #[arg(long, short)]
     verbose: bool,
 }

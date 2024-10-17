@@ -7,6 +7,6 @@ pub enum Error {
     #[error("TODO")]
     IO(#[from] std::io::Error),
 
-    #[error("root permissions required")]
+    #[error("root privileges required")]
     PermissionDenied,
 }

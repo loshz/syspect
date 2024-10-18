@@ -1,48 +1,61 @@
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+use std::thread;
 use std::time::Duration;
 
 use metrics_server::MetricsServer;
 use prometheus_client::{encoding::text::encode, registry::Registry};
-use tokio::{signal, time};
 
-use crate::{config::Config, Error};
+use crate::{bpf, config::Config, Error};
 
-#[tokio::main]
-pub async fn run(config_path: &str) -> Result<(), Error> {
+pub fn run(config_path: &str) -> Result<(), Error> {
     // Load config from file.
     let c = Config::from_file(config_path)?;
-    println!("Using config: {}", config_path);
     println!(
         "Starting service: {} {}",
         env!("CARGO_PKG_NAME"),
         env!("CARGO_PKG_VERSION"),
     );
+    println!("Using config: {}", config_path);
 
-    // Configure metrics.
+    // Configure and expose a metrics registry.
     let registry = <Registry>::default();
+    let server = MetricsServer::http(&c.metrics_addr);
+    println!("Metrics exposed at: http://{}/metrics", &c.metrics_addr);
 
-    // Expose the Prometheus metrics.
-    let addr = c.metrics_addr.as_str();
-    let server = MetricsServer::http(addr);
-    println!("Metrics exposed at: http://{}/metrics", addr);
+    // Register CTRL-C handler.
+    let stop = Arc::new(AtomicBool::new(false));
+    let s = stop.clone();
+    ctrlc::set_handler(move || {
+        println!("Stopping...");
+        s.store(true, Ordering::SeqCst);
+    })
+    .unwrap();
 
-    let poll_interval = Duration::from_secs(c.tracing.interval);
-    loop {
-        // Listen for CTRL+C signal events or sleep.
-        tokio::select! {
-            _ = time::sleep(poll_interval) => {}
-            _ = signal::ctrl_c() => break
-        }
+    let programs = bpf::parse_event_programs(c.tracing.events);
+    let join_handles: Vec<_> = programs
+        .into_iter()
+        .map(|program| {
+            let s = stop.clone();
+            thread::spawn(move || {
+                program.run(s, Duration::from_secs(c.tracing.interval));
+            })
+        })
+        .collect();
 
-        // Encode the current registry and update the metrics server.
-        let mut encoded = String::new();
-        encode(&mut encoded, &registry).unwrap();
-        server.update(encoded.into_bytes());
+    // Encode the current registry and update the metrics server.
+    let mut encoded = String::new();
+    encode(&mut encoded, &registry).unwrap();
+    server.update(encoded.into_bytes());
+
+    // TODO: is there a better way of blocking here?
+    while !stop.load(Ordering::SeqCst) {
+        thread::sleep(Duration::from_secs(1));
     }
 
-    println!("Terminating...");
-    if let Err(e) = server.stop() {
-        eprintln!("{e}");
-    }
+    // Gracefully shut down.
+    let _ = join_handles.into_iter().map(|thread| thread.join().ok());
+    let _ = server.stop();
 
     Ok(())
 }

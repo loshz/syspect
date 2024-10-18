@@ -48,9 +48,8 @@ mod tests {
 
     use super::Config;
 
-    // Test that parsing config with missing fields returns an error.
     #[test]
-    fn test_parse_error() {
+    fn test_parse_invalid_field_error() {
         let toml_str = r#"
             does_not_exist = true
         "#;
@@ -59,7 +58,20 @@ mod tests {
         assert!(matches!(err, Error::Config(_)));
     }
 
-    // Test that parsing a valid config file does not return an error.
+    #[test]
+    fn test_parse_empty_events_error() {
+        let toml_str = r#"
+            metrics_addr = "localhost:9090"
+
+            [tracing]
+            interval = 10
+            events = []
+        "#;
+
+        let err = Config::parse(toml_str).unwrap_err();
+        assert!(matches!(err, Error::Config(_)));
+    }
+
     #[test]
     fn test_parse_success() {
         let toml_str = r#"

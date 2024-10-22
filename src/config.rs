@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, time::Duration};
 
 use serde::Deserialize;
 
@@ -15,8 +15,8 @@ pub struct Config {
 
 #[derive(Debug, Deserialize)]
 pub struct Tracing {
-    /// The interval at which bpf probes should be polled.
-    pub interval: u64,
+    /// The interval (seconds) at which bpf probes should be polled.
+    pub interval: Duration,
 
     /// List of enabled trace events.
     pub events: Vec<String>,
@@ -44,6 +44,8 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
+    use std::time::Duration;
+
     use crate::Error;
 
     use super::Config;
@@ -84,7 +86,7 @@ mod tests {
 
         let config = Config::parse(toml_str).unwrap();
         assert_eq!(&config.metrics_addr, "localhost:9090");
-        assert_eq!(config.tracing.interval, 10);
+        assert_eq!(config.tracing.interval, Duration::from_secs(10));
         assert_eq!(&config.tracing.events, &["sys_enter"]);
     }
 }

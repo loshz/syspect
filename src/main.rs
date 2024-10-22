@@ -9,6 +9,7 @@ use cmd::Cli;
 mod config;
 mod error;
 pub use error::Error;
+mod metrics;
 
 fn main() -> ExitCode {
     if let Err(e) = Cli::parse().run() {

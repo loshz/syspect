@@ -1,5 +1,5 @@
 # syspect - Linux eBPF Monitoring Daemon
-[![builds.sr.ht status](https://builds.sr.ht/~loshz/syspect.svg)](https://builds.sr.ht/~loshz/syspect?) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![GPL-3.0 licensed](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
+[![builds.sr.ht status](https://builds.sr.ht/~loshz/syspect.svg)](https://builds.sr.ht/~loshz/syspect?) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![GPL-3.0 licensed](https://img.shields.io/badge/license-GPL--3.0-blue)](bpf/LICENSE)
 
 A Linux service that monitors systems via eBPF and exports data to Prometheus.
 

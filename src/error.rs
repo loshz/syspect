@@ -10,6 +10,6 @@ pub enum Error {
     #[error("root privileges required")]
     PermissionDenied,
 
-    #[error("warning: skipping unsupported event type: `{0}`")]
+    #[error("unsupported event type: {0}")]
     UnsopprtedProgram(String),
 }

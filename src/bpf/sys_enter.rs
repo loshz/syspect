@@ -6,7 +6,7 @@ use prometheus_client::{
 
 use crate::{metrics::labels::ProcessLabels, Error};
 
-use super::RunnableProgram;
+use super::Program;
 
 #[derive(Debug)]
 pub struct SysEnter {
@@ -21,7 +21,7 @@ impl SysEnter {
     }
 }
 
-impl RunnableProgram for SysEnter {
+impl Program for SysEnter {
     fn run(&self) -> Result<(), Error> {
         println!("sys_enter");
 

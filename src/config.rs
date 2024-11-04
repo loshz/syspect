@@ -1,6 +1,6 @@
 use std::{fs, time::Duration};
 
-use serde::Deserialize;
+use serde::{de::Deserializer, Deserialize};
 
 use crate::Error;
 
@@ -16,6 +16,7 @@ pub struct Config {
 #[derive(Debug, Deserialize)]
 pub struct Tracing {
     /// The interval (seconds) at which bpf probes should be polled.
+    #[serde(deserialize_with = "deserialize_duration_seconds")]
     pub interval: Duration,
 
     /// List of enabled trace events.
@@ -40,6 +41,14 @@ impl Config {
 
         Ok(config)
     }
+}
+
+fn deserialize_duration_seconds<'de, D>(deserializer: D) -> Result<Duration, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let secs = u64::deserialize(deserializer)?;
+    Ok(Duration::from_secs(secs))
 }
 
 #[cfg(test)]

@@ -1,4 +1,3 @@
-use std::net::ToSocketAddrs;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 use std::{
@@ -30,10 +29,7 @@ impl Collector {
         self.registry.write().unwrap().register_collector(collector);
     }
 
-    pub fn start<A>(&mut self, stop: Arc<AtomicBool>, addr: A)
-    where
-        A: ToSocketAddrs,
-    {
+    pub fn start(&mut self, stop: Arc<AtomicBool>, addr: &str) {
         let server = MetricsServer::http(addr);
         let registry = Arc::clone(&self.registry);
 

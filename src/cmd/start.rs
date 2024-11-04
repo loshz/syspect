@@ -26,10 +26,8 @@ pub fn run(config_path: &str) -> Result<(), Error> {
     })
     .unwrap();
 
-    // Create and start a new metrics collector.
+    // Create a new metrics collector.
     let mut collector = Collector::new();
-    collector.start(stop.clone(), &c.metrics_addr);
-    println!("Metrics exposed at: http://{}/metrics", &c.metrics_addr);
 
     // Parse trace events and start individual bpf programs.
     let join_handles: Vec<_> = c
@@ -42,15 +40,19 @@ pub fn run(config_path: &str) -> Result<(), Error> {
                 // collector.register(program);
 
                 // Start the program.
-                let s = stop.clone();
-                Some(run_program(program, s, c.tracing.interval))
+                let handle = run_program(program, c.tracing.interval, stop.clone());
+                Some(handle)
             }
             Err(e) => {
-                eprintln!("warning: {}", e);
+                eprintln!("{e}");
                 None
             }
         })
         .collect();
+
+    // After loading the bpf programs, start the collector.
+    collector.start(stop.clone(), &c.metrics_addr);
+    println!("Metrics exposed at: http://{}/metrics", &c.metrics_addr);
 
     // TODO: is there a better way of blocking here?
     while !stop.load(Ordering::SeqCst) {
@@ -66,8 +68,8 @@ pub fn run(config_path: &str) -> Result<(), Error> {
 
 fn run_program(
     program: Box<dyn Program>,
-    stop: Arc<AtomicBool>,
     interval: Duration,
+    stop: Arc<AtomicBool>,
 ) -> JoinHandle<()> {
     thread::spawn(move || {
         while !stop.load(Ordering::SeqCst) {

@@ -1,9 +1,9 @@
 use std::path::Path;
 
-use crate::Error;
+use crate::{cmd::is_root, Error};
 
 pub fn run(_verbose: bool) -> Result<(), Error> {
-    crate::is_root()?;
+    is_root()?;
 
     println!("Currently available Kernel trace events:");
 

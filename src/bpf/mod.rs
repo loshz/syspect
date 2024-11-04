@@ -7,7 +7,7 @@ use crate::Error;
 pub mod sys_enter;
 use sys_enter::SysEnter;
 
-pub trait Program: Send + Sync + Collector {
+pub trait Program: Send + Sync {
     fn run(&self) -> Result<(), Error>;
 }
 

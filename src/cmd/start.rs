@@ -1,12 +1,11 @@
-use std::str::FromStr;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
 };
-use std::thread::{self, JoinHandle};
+use std::thread;
 use std::time::Duration;
 
-use crate::{bpf::Program, config::Config, metrics::Collector, Error};
+use crate::{bpf, config::Config, metrics::Collector, Error};
 
 pub fn run(config_path: &str) -> Result<(), Error> {
     println!(
@@ -34,13 +33,10 @@ pub fn run(config_path: &str) -> Result<(), Error> {
         .tracing
         .events
         .into_iter()
-        .filter_map(|event| match Box::<dyn Program>::from_str(&event) {
+        .filter_map(|event| match bpf::parse_program(&event) {
             Ok(program) => {
-                // Register the program with the metrics collector.
-                // collector.register(program);
-
-                // Start the program.
-                let handle = run_program(program, c.tracing.interval, stop.clone());
+                let s = stop.clone();
+                let handle = thread::spawn(move || program.run(c.tracing.interval, s));
                 Some(handle)
             }
             Err(e) => {
@@ -64,21 +60,4 @@ pub fn run(config_path: &str) -> Result<(), Error> {
     collector.stop();
 
     Ok(())
-}
-
-fn run_program(
-    program: Box<dyn Program>,
-    interval: Duration,
-    stop: Arc<AtomicBool>,
-) -> JoinHandle<()> {
-    thread::spawn(move || {
-        while !stop.load(Ordering::SeqCst) {
-            if let Err(_e) = program.run() {
-                // TODO: print error.
-                break;
-            }
-
-            thread::sleep(interval);
-        }
-    })
 }

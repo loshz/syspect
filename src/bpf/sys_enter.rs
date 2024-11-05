@@ -6,22 +6,20 @@ use prometheus_client::{
 
 use crate::{metrics::labels::ProcessLabels, Error};
 
-use super::Program;
+use super::Programmable;
 
 #[derive(Debug)]
 pub struct SysEnter {
     counts: Family<ProcessLabels, Gauge>,
 }
 
-impl SysEnter {
-    pub fn new() -> Self {
+impl Programmable for SysEnter {
+    fn new() -> Self {
         Self {
             counts: Family::<ProcessLabels, Gauge>::default(),
         }
     }
-}
 
-impl Program for SysEnter {
     fn run(&self) -> Result<(), Error> {
         println!("sys_enter");
 

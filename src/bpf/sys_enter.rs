@@ -12,13 +12,13 @@ use super::Programmable;
 
 #[derive(Debug)]
 pub struct SysEnter {
-    counts: Family<ProcessLabels, Gauge>,
+    totals: Family<ProcessLabels, Gauge>,
 }
 
 impl Programmable for SysEnter {
     fn new() -> Self {
         Self {
-            counts: Family::<ProcessLabels, Gauge>::default(),
+            totals: Family::<ProcessLabels, Gauge>::default(),
         }
     }
 
@@ -26,7 +26,7 @@ impl Programmable for SysEnter {
         println!("sys_enter");
 
         // TODO: get actual sys_enter count.
-        self.counts
+        self.totals
             .get_or_create(&ProcessLabels {
                 pid: 1,
                 pname: "pname_a".to_string(),
@@ -40,7 +40,7 @@ impl Programmable for SysEnter {
         vec![Box::new(Collectable::new(
             "sys_enter_total",
             "Number of syscall entries",
-            self.counts.clone(),
+            self.totals.clone(),
         ))]
     }
 }

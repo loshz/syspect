@@ -5,7 +5,7 @@ use std::sync::{
 use std::thread;
 use std::time::Duration;
 
-use crate::{bpf, config::Config, metrics::Collector, Error};
+use crate::{bpf, config::Config, metrics::collector::Collector, Error};
 
 pub fn run(config_path: &str) -> Result<(), Error> {
     println!(
@@ -37,9 +37,7 @@ pub fn run(config_path: &str) -> Result<(), Error> {
         .filter_map(|event| match bpf::parse_program(&event) {
             Ok(program) => {
                 // Register the program metrics with the collector.
-                for metric in program.metrics() {
-                    collector.register(metric);
-                }
+                collector.register(program.metrics());
 
                 // Start the program in the background.
                 let s = stop.clone();

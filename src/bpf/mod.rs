@@ -20,8 +20,7 @@ pub trait Programmable: Send + Sync {
     /// Run the underlying program.
     fn run(&self) -> Result<(), Error>;
 
-    /// Returns all of the metrics omitted by a program that should be registered with a metrics
-    /// collector.
+    /// Returns all of the collectable metrics omitted by a program.
     fn metrics(&self) -> Vec<Box<dyn Collector>>;
 }
 

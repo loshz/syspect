@@ -10,7 +10,7 @@ pub enum Error {
     #[error("error: root privileges required")]
     PermissionDenied,
 
-    #[error("error: encountered issue running bpf program: {0}")]
+    #[error("error: encountered bpf program issue: {0}")]
     Program(String),
 
     #[error("error: unsupported event type `{0}`")]

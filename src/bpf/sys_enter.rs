@@ -1,10 +1,12 @@
 use prometheus_client::{
     collector::Collector,
-    encoding::{DescriptorEncoder, EncodeMetric},
     metrics::{family::Family, gauge::Gauge},
 };
 
-use crate::{metrics::labels::ProcessLabels, Error};
+use crate::{
+    metrics::{labels::ProcessLabels, Collectable},
+    Error,
+};
 
 use super::Programmable;
 
@@ -33,17 +35,12 @@ impl Programmable for SysEnter {
 
         Ok(())
     }
-}
 
-impl Collector for SysEnter {
-    fn encode(&self, mut encoder: DescriptorEncoder) -> Result<(), std::fmt::Error> {
-        let metric_encoder = encoder.encode_descriptor(
+    fn metrics(&self) -> Vec<Box<dyn Collector>> {
+        vec![Box::new(Collectable::new(
             "sys_enter_total",
             "Number of syscall entries",
-            None,
-            self.counts.metric_type(),
-        )?;
-        self.counts.encode(metric_encoder)?;
-        Ok(())
+            self.counts.clone(),
+        ))]
     }
 }

@@ -6,9 +6,34 @@ use std::{
 };
 
 use metrics_server::MetricsServer;
-use prometheus_client::{encoding::text::encode, registry::Registry};
+use prometheus_client::{
+    encoding::{text::encode, DescriptorEncoder},
+    registry::{Metric, Registry},
+};
 
 pub mod labels;
+
+#[derive(Debug)]
+pub struct Collectable<M: Metric> {
+    name: &'static str,
+    help: &'static str,
+    metric: M,
+}
+
+impl<M: Metric> Collectable<M> {
+    pub fn new(name: &'static str, help: &'static str, metric: M) -> Self {
+        Self { name, help, metric }
+    }
+}
+
+impl<M: Metric> prometheus_client::collector::Collector for Collectable<M> {
+    fn encode(&self, mut encoder: DescriptorEncoder) -> Result<(), std::fmt::Error> {
+        let metric_encoder =
+            encoder.encode_descriptor(self.name, self.help, None, self.metric.metric_type())?;
+        self.metric.encode(metric_encoder)?;
+        Ok(())
+    }
+}
 
 pub struct Collector {
     // The Prometheus registry to store metrics.

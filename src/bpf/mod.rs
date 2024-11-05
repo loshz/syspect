@@ -5,14 +5,24 @@ use std::sync::{
 use std::thread;
 use std::time::Duration;
 
+use prometheus_client::collector::Collector;
+
 use crate::Error;
 
 pub mod sys_enter;
 use sys_enter::SysEnter;
 
+/// Represents a runnable BPF program that omits metrics.
 pub trait Programmable: Send + Sync {
+    /// Returns a new [`Programmable`] object.
     fn new() -> Self;
+
+    /// Run the underlying program.
     fn run(&self) -> Result<(), Error>;
+
+    /// Returns all of the metrics omitted by a program that should be registered with a metrics
+    /// collector.
+    fn metrics(&self) -> Vec<Box<dyn Collector>>;
 }
 
 pub struct Program<P: Programmable> {
@@ -33,6 +43,10 @@ impl<P: Programmable> Program<P> {
 
             thread::sleep(interval);
         }
+    }
+
+    pub fn metrics(&self) -> Vec<Box<dyn Collector>> {
+        self.inner.metrics()
     }
 }
 

@@ -13,6 +13,7 @@ pub fn run(config_path: &str) -> Result<(), Error> {
         env!("CARGO_PKG_NAME"),
         env!("CARGO_PKG_VERSION"),
     );
+
     // Load config from file.
     let c = Config::from_file(config_path)?;
     println!("Using config: {}", config_path);
@@ -35,6 +36,12 @@ pub fn run(config_path: &str) -> Result<(), Error> {
         .into_iter()
         .filter_map(|event| match bpf::parse_program(&event) {
             Ok(program) => {
+                // Register the program metrics with the collector.
+                for metric in program.metrics() {
+                    collector.register(metric);
+                }
+
+                // Start the program in the background.
                 let s = stop.clone();
                 let handle = thread::spawn(move || program.run(c.tracing.interval, s));
                 Some(handle)
@@ -45,6 +52,11 @@ pub fn run(config_path: &str) -> Result<(), Error> {
             }
         })
         .collect();
+
+    // If we don't have any running programs, we can assume there was an issue.
+    if join_handles.is_empty() {
+        return Err(Error::Program("no programs running".into()));
+    }
 
     // After loading the bpf programs, start the collector.
     collector.start(stop.clone(), &c.metrics_addr);

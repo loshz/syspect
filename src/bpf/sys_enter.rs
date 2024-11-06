@@ -10,6 +10,9 @@ use crate::{
 
 use super::Programmable;
 
+// Include the generated bpf skeleton.
+include!(concat!(env!("OUT_DIR"), "/sys_enter.bpf.rs"));
+
 #[derive(Debug)]
 pub struct SysEnter {
     totals: Family<ProcessLabels, Gauge>,

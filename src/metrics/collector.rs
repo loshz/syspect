@@ -25,9 +25,7 @@ impl Collector {
 
     pub fn register(&mut self, collectors: Vec<Box<dyn prometheus_client::collector::Collector>>) {
         let mut registry = self.registry.write().unwrap();
-        let _ = collectors
-            .into_iter()
-            .map(|collector| registry.register_collector(collector));
+        collectors.for_each(|collector| registry.register_collector(collector));
     }
 
     pub fn start(&mut self, stop: Arc<AtomicBool>, addr: &str) {

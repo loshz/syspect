@@ -1,18 +1,15 @@
 #[cfg(target_os = "linux")]
 fn main() {
-    use std::{
-        env::{self, consts::ARCH},
-        path::PathBuf,
-    };
-
-    use libbpf_cargo::SkeletonBuilder;
+    use std::env;
+    use std::fs;
+    use std::path::PathBuf;
 
     // Build a path of the bpf dirs.
     let src_dir = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap()).join("bpf");
     let out_dir = env::var_os("OUT_DIR").unwrap();
 
     // Attempt to collect a list of files with the .bpf.c extension from the src dir.
-    std::fs::read_dir(&src_dir)
+    fs::read_dir(&src_dir)
         .unwrap()
         // Filter out dir entries that couldn't be read.
         .filter_map(|res| res.ok())
@@ -25,12 +22,14 @@ fn main() {
             let mut out = PathBuf::from(&out_dir).join(src.file_name().unwrap());
             out.set_extension("rs");
 
-            SkeletonBuilder::new()
+            libbpf_cargo::SkeletonBuilder::new()
                 .source(&src)
                 .clang_args([
                     "-c -g -O2",
                     "-I",
-                    vmlinux::include_path_root().join(ARCH).as_os_str(),
+                    vmlinux::include_path_root()
+                        .join(env::consts::ARCH)
+                        .as_os_str(),
                 ])
                 .build_and_generate(&out)
                 .unwrap();

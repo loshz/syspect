@@ -1,5 +1,6 @@
 image: archlinux
 packages:
+  - clang
   - rustup
   - libelf
   - linux-headers
@@ -11,8 +12,10 @@ environment:
 tasks:
   - lint: |
       cd $repo
+      rustup default stable
       cargo fmt -- --check
       cargo clippy --tests -- --no-deps -D warnings
   - test: |
       cd $repo
+      rustup default stable
       cargo test --no-fail-fast --all-features

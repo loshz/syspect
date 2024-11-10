@@ -4,6 +4,8 @@ packages:
 - rustfmt
 - rust-clippy
 - cargo
+- libelf
+- zlib
 sources:
 - https://git.sr.ht/~loshz/syspect
 environment:

@@ -10,12 +10,9 @@ sources:
 environment:
   repo: syspect
 tasks:
-  - lint: |
+  - build: |
       cd $repo
       rustup default stable
       cargo fmt -- --check
       cargo clippy --tests -- --no-deps -D warnings
-  - test: |
-      cd $repo
-      rustup default stable
       cargo test --no-fail-fast --all-features

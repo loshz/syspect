@@ -1,6 +1,7 @@
 #[cfg(target_os = "linux")]
 fn main() {
     use std::env;
+    use std::ffi::OsStr;
     use std::fs;
     use std::path::PathBuf;
 
@@ -25,8 +26,7 @@ fn main() {
             libbpf_cargo::SkeletonBuilder::new()
                 .source(&src)
                 .clang_args([
-                    "-c -g -O2",
-                    "-I",
+                    OsStr::new("-I"),
                     vmlinux::include_path_root()
                         .join(env::consts::ARCH)
                         .as_os_str(),

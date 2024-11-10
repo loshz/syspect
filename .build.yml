@@ -1,20 +1,18 @@
-image: alpine/edge
+image: archlinux
 packages:
-- rust
-- rustfmt
-- rust-clippy
-- cargo
-- libelf
-- zlib
+  - rustup
+  - libelf
+  - linux-headers
+  - zlib
 sources:
-- https://git.sr.ht/~loshz/syspect
+  - https://git.sr.ht/~loshz/syspect
 environment:
   repo: syspect
 tasks:
-- lint: |
-    cd $repo
-    cargo fmt -- --check
-    cargo clippy --tests -- --no-deps -D warnings
-- test: |
-    cd $repo
-    cargo test --no-fail-fast --all-features
+  - lint: |
+      cd $repo
+      cargo fmt -- --check
+      cargo clippy --tests -- --no-deps -D warnings
+  - test: |
+      cd $repo
+      cargo test --no-fail-fast --all-features

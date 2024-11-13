@@ -34,7 +34,7 @@ pub fn run(config_path: &str) -> Result<(), Error> {
         .tracing
         .events
         .into_iter()
-        .filter_map(|event| match bpf::parse_program(&event) {
+        .filter_map(|event| match bpf::parse_program(event) {
             Ok(program) => {
                 // Register the program metrics with the collector.
                 collector.register(program.metrics());
@@ -53,7 +53,7 @@ pub fn run(config_path: &str) -> Result<(), Error> {
 
     // If we don't have any running programs, we can assume there was an issue.
     if join_handles.is_empty() {
-        return Err(Error::Program("no programs running".into()));
+        return Err(Error::Config("unable to parse any bpf programs".into()));
     }
 
     // After loading the bpf programs, start the collector.

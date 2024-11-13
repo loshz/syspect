@@ -7,10 +7,9 @@ use std::time::Duration;
 
 use prometheus_client::collector::Collector;
 
-use crate::Error;
+use crate::{Error, ProgramError};
 
-pub mod sys_enter;
-use sys_enter::SysEnter;
+mod syscalls;
 
 /// Represents a runnable BPF program that omits metrics.
 pub trait Programmable: Send + Sync {
@@ -18,7 +17,7 @@ pub trait Programmable: Send + Sync {
     fn new() -> Self;
 
     /// Run the underlying program.
-    fn run(&self) -> Result<(), Error>;
+    fn run(&self) -> Result<(), ProgramError>;
 
     /// Returns all of the collectable metrics omitted by a program.
     fn metrics(&self) -> Vec<Box<dyn Collector>>;
@@ -36,7 +35,7 @@ impl<P: Programmable> Program<P> {
     pub fn run(&self, interval: Duration, stop: Arc<AtomicBool>) {
         while !stop.load(Ordering::SeqCst) {
             if let Err(e) = self.inner.run() {
-                eprintln!("{e}");
+                eprintln!("{}", Error::from(e));
                 break;
             }
 
@@ -49,9 +48,9 @@ impl<P: Programmable> Program<P> {
     }
 }
 
-pub fn parse_program(s: &str) -> Result<Program<impl Programmable>, Error> {
-    match s {
-        "sys_enter" => Ok(Program::<SysEnter>::new()),
-        &_ => Err(Error::UnsopprtedProgram(s.into())),
+pub fn parse_program(s: String) -> Result<Program<impl Programmable>, ProgramError> {
+    match s.as_str() {
+        "sys_enter" => Ok(Program::<syscalls::SysEnter>::new()),
+        &_ => Err(ProgramError::Unsupported(s)),
     }
 }

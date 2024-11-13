@@ -40,5 +40,5 @@ fn main() {
 
 #[cfg(not(target_os = "linux"))]
 fn main() {
-    panic!("only able to build on linux, kernel header files required");
+    // panic!("only able to build on linux, kernel header files required");
 }

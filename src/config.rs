@@ -25,7 +25,7 @@ pub struct Tracing {
 
 impl Config {
     pub fn from_file(path: &str) -> Result<Config, Error> {
-        let data = fs::read_to_string(path).map_err(|e| Error::Config(e.to_string()))?;
+        let data = fs::read_to_string(path).map_err(Error::IO)?;
         let config = Self::parse(data.as_str())?;
         Ok(config)
     }

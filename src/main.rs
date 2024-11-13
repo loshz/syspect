@@ -7,7 +7,7 @@ mod cmd;
 use cmd::Cli;
 mod config;
 mod error;
-pub use error::Error;
+pub use error::*;
 mod metrics;
 
 fn main() -> ExitCode {

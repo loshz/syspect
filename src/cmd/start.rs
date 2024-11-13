@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
@@ -5,7 +6,7 @@ use std::sync::{
 use std::thread;
 use std::time::Duration;
 
-use crate::{bpf, config::Config, metrics::collector::Collector, Error};
+use crate::{bpf::Program, config::Config, metrics::collector::Collector, Error};
 
 pub fn run(config_path: &str) -> Result<(), Error> {
     println!(
@@ -34,7 +35,7 @@ pub fn run(config_path: &str) -> Result<(), Error> {
         .tracing
         .events
         .into_iter()
-        .filter_map(|event| match bpf::parse_program(event) {
+        .filter_map(|event| match Box::<dyn Program>::from_str(&event) {
             Ok(program) => {
                 // Register the program metrics with the collector.
                 collector.register(program.metrics());

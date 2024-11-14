@@ -6,9 +6,11 @@ use std::sync::{
 use std::thread;
 use std::time::Duration;
 
-use crate::{bpf::Program, config::Config, metrics::collector::Collector, Error};
+use crate::{bpf::Program, cmd::is_root, config::Config, metrics::collector::Collector, Error};
 
 pub fn run(config_path: &str) -> Result<(), Error> {
+    is_root()?;
+
     println!(
         "Starting service: {} {}",
         env!("CARGO_PKG_NAME"),
@@ -42,7 +44,11 @@ pub fn run(config_path: &str) -> Result<(), Error> {
 
                 // Start the program in the background.
                 let s = stop.clone();
-                let handle = thread::spawn(move || program.run(c.tracing.interval, s));
+                let handle = thread::spawn(move || {
+                    if let Err(e) = program.run(c.tracing.interval, s) {
+                        eprintln!("{e}");
+                    }
+                });
                 Some(handle)
             }
             Err(e) => {

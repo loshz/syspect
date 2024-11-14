@@ -6,7 +6,7 @@ use std::sync::{
 use std::thread;
 use std::time::Duration;
 
-use libbpf_rs::skel::{OpenSkel, Skel, SkelBuilder};
+use libbpf_rs::skel::{MapFlags, OpenSkel, Skel, SkelBuilder};
 use prometheus_client::{
     collector::Collector,
     metrics::{family::Family, gauge::Gauge},
@@ -14,12 +14,13 @@ use prometheus_client::{
 
 use crate::{
     bpf::Program,
+    include_bpf,
     metrics::{labels::ProcessLabels, Collectable},
     ProgramError,
 };
 
 // Include the generated bpf skeleton.
-include!(concat!(env!("OUT_DIR"), "/sys_enter.bpf.rs"));
+include_bpf!("sys_enter");
 
 pub(crate) const SYS_ENTER: &str = "sys_enter";
 
@@ -38,24 +39,24 @@ impl Program for SysEnter {
     fn run(&self, interval: Duration, stop: Arc<AtomicBool>) -> Result<(), ProgramError> {
         let sys_enter = SysEnterSkelBuilder::default();
         let mut open_object = MaybeUninit::uninit();
-        let prog = sys_enter
+        let tracepoint = sys_enter
             .open(&mut open_object)
-            .map_err(|_| ProgramError::Open(SYS_ENTER))?;
-        let mut tracepoint = prog.load().map_err(|_| ProgramError::Load(SYS_ENTER))?;
-        tracepoint
+            .map_err(|_| ProgramError::Open(SYS_ENTER))?
+            .load()
+            .map_err(|_| ProgramError::Load(SYS_ENTER))?
             .attach()
             .map_err(|_| ProgramError::Attach(SYS_ENTER))?;
 
-        // TODO: get actual sys_enter count.
-        self.totals
-            .get_or_create(&ProcessLabels {
-                pid: 1,
-                pname: "pname_a".to_string(),
-            })
-            .set(10);
-
         while !stop.load(Ordering::SeqCst) {
-            println!("sys_enter");
+            let map = tracepoint.maps().syscall_count();
+
+            for key in map.keys() {
+                // TODO: log error.
+                let Ok(syscall_count) = map.lookup(&key, MapFlags::ANY) else {
+                    continue;
+                };
+            }
+
             thread::sleep(interval);
         }
 

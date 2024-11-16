@@ -6,6 +6,7 @@ use prometheus_client::collector::Collector;
 
 use crate::ProgramError;
 
+pub(crate) mod ffi;
 mod syscalls;
 
 #[macro_export]

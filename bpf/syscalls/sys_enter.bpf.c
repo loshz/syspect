@@ -3,15 +3,15 @@
 #include <bpf/bpf_core_read.h>
 #include <bpf/bpf_helpers.h>
 
-struct map_key {
+struct process {
     char proc_name[TASK_COMM_LEN];
     pid_t pid;
-} __attribute__((packed));
+};
 
 struct {
     __uint(type, BPF_MAP_TYPE_HASH);
     __uint(max_entries, 8192);
-    __type(key, struct map_key);
+    __type(key, struct process);
     __type(value, u64);
 } syscall_count SEC(".maps");
 
@@ -21,7 +21,7 @@ int sys_enter(struct trace_event_raw_sys_enter *args)
     struct task_struct *task = (struct task_struct *) bpf_get_current_task();
 
     /* Setup key */
-    struct map_key key;
+    struct process key;
     __builtin_memcpy(key.proc_name, BPF_CORE_READ(task, comm), sizeof(task->comm));
     key.pid = BPF_CORE_READ(task, pid);
 

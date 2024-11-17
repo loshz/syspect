@@ -2,7 +2,7 @@ use std::ptr;
 
 use libc::{c_uchar, pid_t};
 
-#[repr(C, packed)]
+#[repr(C)]
 #[derive(Clone, Copy, Debug)]
 pub(crate) struct Process {
     pub pname: [c_uchar; 16],

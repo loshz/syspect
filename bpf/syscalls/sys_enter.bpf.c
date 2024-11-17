@@ -3,8 +3,6 @@
 #include <bpf/bpf_core_read.h>
 #include <bpf/bpf_helpers.h>
 
-#define TASK_COMM_LEN 16
-
 struct map_key {
     char proc_name[TASK_COMM_LEN];
     pid_t pid;
@@ -32,10 +30,8 @@ int sys_enter(struct trace_event_raw_sys_enter *args)
     if (!count) {
         u64 zero = 0;
         bpf_map_update_elem(&syscall_count, &key, &zero, 0);
-        /* bpf_printk("(%s, %d) = 0", key.proc_name, key.syscall_nr); */
     } else {
         (*count)++;
-        /* bpf_printk("(%s, %d) = %d", key.proc_name, key.syscall_nr, *count); */
     }
 
     return 0;

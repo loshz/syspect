@@ -17,13 +17,14 @@ use prometheus_client::{
 
 use crate::{
     bpf::{ffi::Process, Program},
-    include_bpf,
     metrics::{labels::ProcessLabels, Collectable},
     ProgramError,
 };
 
 // Include the generated bpf skeleton.
-include_bpf!("sys_enter");
+mod bpf {
+    include!(concat!(env!("OUT_DIR"), "/sys_enter.bpf.rs"));
+}
 
 pub(crate) const SYS_ENTER: &str = "sys_enter";
 
@@ -40,7 +41,7 @@ impl Program for SysEnter {
     }
 
     fn run(&self, interval: Duration, stop: Arc<AtomicBool>) -> Result<(), ProgramError> {
-        let sys_enter = SysEnterSkelBuilder::default();
+        let sys_enter = bpf::SysEnterSkelBuilder::default();
         let mut open_object = MaybeUninit::uninit();
 
         // Attempt to open and load the program into the kernel.

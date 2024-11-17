@@ -9,13 +9,6 @@ use crate::ProgramError;
 pub(crate) mod ffi;
 mod syscalls;
 
-#[macro_export]
-macro_rules! include_bpf {
-    ($file:expr $(,)?) => {
-        include!(concat!(env!("OUT_DIR"), "/", $file, ".bpf.rs"));
-    };
-}
-
 /// Represents a runnable BPF program that omits metrics.
 pub trait Program: Send + Sync {
     /// Returns a new [`Program`] object.

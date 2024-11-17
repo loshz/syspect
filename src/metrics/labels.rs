@@ -1,3 +1,4 @@
+use libc::pid_t;
 use prometheus_client::encoding::EncodeLabelSet;
 
 use crate::bpf::ffi::Process;
@@ -5,7 +6,7 @@ use crate::bpf::ffi::Process;
 #[derive(Clone, Debug, Hash, PartialEq, Eq, EncodeLabelSet)]
 pub struct ProcessLabels {
     /// Process ID
-    pub pid: u32,
+    pub pid: pid_t,
     /// Process name
     pub pname: String,
 }
@@ -13,7 +14,7 @@ pub struct ProcessLabels {
 impl From<Process> for ProcessLabels {
     fn from(process: Process) -> Self {
         Self {
-            pid: process.pid as u32,
+            pid: process.pid,
             pname: String::from_utf8_lossy(&process.pname)
                 .trim_matches(char::from(0))
                 .into(),

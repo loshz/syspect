@@ -25,7 +25,7 @@ mod bpf {
     include!(concat!(env!("OUT_DIR"), "/sys_enter.bpf.rs"));
 }
 
-pub(crate) const SYS_ENTER: &str = "sys_enter";
+pub(crate) const SYS_ENTER: &str = "raw_syscalls:sys_enter";
 
 #[derive(Debug)]
 pub(crate) struct SysEnter {

@@ -15,12 +15,15 @@ pub struct Config {
 
 #[derive(Debug, Deserialize)]
 pub struct Tracing {
+    /// Enable debug output.
+    pub debug: bool,
+
     /// The interval (seconds) at which bpf probes should be polled.
     #[serde(deserialize_with = "deserialize_duration_seconds")]
     pub interval: Duration,
 
-    /// List of enabled trace events.
-    pub events: Vec<String>,
+    /// List of raw_syscall events: `/sys/kernel/debug/tracing/events/raw_syscalls`
+    pub raw_syscalls: Vec<String>,
 }
 
 impl Config {
@@ -33,9 +36,13 @@ impl Config {
     fn parse(data: &str) -> Result<Config, Error> {
         let config: Config = toml::from_str(data).map_err(|e| Error::Config(e.message().into()))?;
 
+        if config.tracing.debug {
+            println!("Debug output enabled");
+        }
+
         // Check events have been registered.
         // TODO: use a default list?
-        if config.tracing.events.is_empty() {
+        if config.tracing.raw_syscalls.is_empty() {
             return Err(Error::Config("no tracing events specified".into()));
         }
 
@@ -89,12 +96,14 @@ mod tests {
             metrics_addr = "localhost:9090"
 
             [tracing]
+            debug = true
             interval = 10
             events = ["sys_enter"]
         "#;
 
         let config = Config::parse(toml_str).unwrap();
         assert_eq!(&config.metrics_addr, "localhost:9090");
+        assert!(&config.tracing.debug);
         assert_eq!(config.tracing.interval, Duration::from_secs(10));
         assert_eq!(&config.tracing.events, &["sys_enter"]);
     }

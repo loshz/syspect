@@ -4,7 +4,6 @@ use std::sync::{
     Arc,
 };
 use std::thread;
-use std::time::Duration;
 
 use libbpf_rs::{
     skel::{OpenSkel, Skel, SkelBuilder},
@@ -16,7 +15,7 @@ use prometheus_client::{
 };
 
 use crate::{
-    bpf::{ffi::Process, Program},
+    bpf::{ffi::Process, Program, ProgramOptions},
     metrics::{labels::ProcessLabels, Collectable},
     ProgramError,
 };
@@ -40,11 +39,14 @@ impl Program for SysEnter {
         }
     }
 
-    fn run(&self, interval: Duration, stop: Arc<AtomicBool>) -> Result<(), ProgramError> {
-        let sys_enter = bpf::SysEnterSkelBuilder::default();
-        let mut open_object = MaybeUninit::uninit();
+    fn run(&self, opts: ProgramOptions, stop: Arc<AtomicBool>) -> Result<(), ProgramError> {
+        let mut sys_enter = bpf::SysEnterSkelBuilder::default();
+        if opts.debug {
+            sys_enter.obj_builder.debug(true);
+        }
 
         // Attempt to open and load the program into the kernel.
+        let mut open_object = MaybeUninit::uninit();
         let mut tracepoint = sys_enter
             .open(&mut open_object)
             .map_err(|_| ProgramError::Open(SYS_ENTER))?
@@ -76,7 +78,7 @@ impl Program for SysEnter {
                 }
             });
 
-            thread::sleep(interval);
+            thread::sleep(opts.interval);
         }
 
         Ok(())

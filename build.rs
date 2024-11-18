@@ -10,7 +10,7 @@ fn main() {
     let out_dir = env::var_os("OUT_DIR").unwrap();
 
     // List of bpf probes to compile.
-    let probes = vec!["syscalls"];
+    let probes = vec!["raw_syscalls"];
 
     // Attempt to collect a list of files with the .bpf.c extension from the src dir.
     probes.into_iter().for_each(|dir| {

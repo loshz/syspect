@@ -4,10 +4,10 @@ use std::time::Duration;
 
 use prometheus_client::collector::Collector;
 
-use crate::ProgramError;
+use crate::{config::Tracing, ProgramError};
 
 pub(crate) mod ffi;
-mod syscalls;
+mod raw_syscalls;
 
 /// Represents a runnable BPF program that omits metrics.
 pub trait Program: Send + Sync {
@@ -17,7 +17,7 @@ pub trait Program: Send + Sync {
         Self: Sized;
 
     /// Run the underlying program.
-    fn run(&self, interval: Duration, stop: Arc<AtomicBool>) -> Result<(), ProgramError>;
+    fn run(&self, opts: ProgramOptions, stop: Arc<AtomicBool>) -> Result<(), ProgramError>;
 
     /// Returns all of the collectable metrics omitted by a program.
     fn metrics(&self) -> Vec<Box<dyn Collector>>;
@@ -28,8 +28,44 @@ impl FromStr for Box<dyn Program> {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            syscalls::SYS_ENTER => Ok(Box::new(syscalls::SysEnter::new())),
+            raw_syscalls::SYS_ENTER => Ok(Box::new(raw_syscalls::SysEnter::new())),
             &_ => Err(ProgramError::Unsupported(s.into())),
         }
+    }
+}
+
+/// Runtime options passed to a program.
+pub struct ProgramOptions {
+    pub debug: bool,
+    pub interval: Duration,
+}
+
+impl From<&Tracing> for ProgramOptions {
+    fn from(config: &Tracing) -> Self {
+        Self {
+            debug: config.debug,
+            interval: config.interval,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::time::Duration;
+
+    use crate::config::Tracing;
+
+    use super::ProgramOptions;
+
+    #[test]
+    fn test_programoptions_from_config() {
+        let config = Tracing {
+            debug: true,
+            interval: Duration::from_secs(10),
+            events: vec![],
+        };
+        let progam_options = ProgramOptions::from(&config);
+        assert!(progam_options.debug);
+        assert_eq!(Duration::from_secs(10), progam_options.interval);
     }
 }

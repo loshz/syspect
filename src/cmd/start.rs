@@ -6,7 +6,13 @@ use std::sync::{
 use std::thread;
 use std::time::Duration;
 
-use crate::{bpf::Program, cmd::is_root, config::Config, metrics::collector::Collector, Error};
+use crate::{
+    bpf::{Program, ProgramOptions},
+    cmd::is_root,
+    config::Config,
+    metrics::collector::Collector,
+    Error,
+};
 
 pub fn run(config_path: &str) -> Result<(), Error> {
     is_root()?;
@@ -18,8 +24,8 @@ pub fn run(config_path: &str) -> Result<(), Error> {
     );
 
     // Load config from file.
-    let c = Config::from_file(config_path)?;
     println!("Using config: {}", config_path);
+    let c = Config::from_file(config_path)?;
 
     // Register CTRL-C handler.
     let stop = Arc::new(AtomicBool::new(false));
@@ -35,17 +41,18 @@ pub fn run(config_path: &str) -> Result<(), Error> {
     // Parse trace events and start individual bpf programs.
     let join_handles: Vec<_> = c
         .tracing
-        .events
-        .into_iter()
-        .filter_map(|event| match Box::<dyn Program>::from_str(&event) {
+        .raw_syscalls
+        .iter()
+        .filter_map(|event| match Box::<dyn Program>::from_str(event) {
             Ok(program) => {
                 // Register the program metrics with the collector.
                 collector.register(program.metrics());
 
                 // Start the program in the background.
+                let opts = ProgramOptions::from(&c.tracing);
                 let s = stop.clone();
                 let handle = thread::spawn(move || {
-                    if let Err(e) = program.run(c.tracing.interval, s) {
+                    if let Err(e) = program.run(opts, s) {
                         eprintln!("{e}");
                     }
                 });

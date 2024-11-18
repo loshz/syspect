@@ -21,8 +21,8 @@ enum Commands {
     Install(Install),
     /// Start the daemon and expose a local metrics HTTP endpoint
     Start(Start),
-    /// List currently available Kernel trace events
-    Events(Events),
+    /// List currently supported Kernel tracing events
+    Events,
     /// Remove config and systemd service files
     Uninstall(Install),
 }
@@ -47,20 +47,12 @@ struct Start {
     config: String,
 }
 
-#[derive(Args)]
-#[command(disable_version_flag = true)]
-struct Events {
-    /// Whether to print the output verbosely
-    #[arg(long, short)]
-    verbose: bool,
-}
-
 impl Cli {
     pub fn run(self) -> Result<(), Error> {
         match self.command {
             Commands::Install(c) => install::run(&c.config, &c.service),
             Commands::Start(c) => start::run(&c.config),
-            Commands::Events(c) => events::run(c.verbose),
+            Commands::Events => events::run(),
             Commands::Uninstall(c) => uninstall::run(&c.config, &c.service),
         }
     }

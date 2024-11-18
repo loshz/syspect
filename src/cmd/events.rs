@@ -1,16 +1,20 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-use crate::{cmd::is_root, Error};
+use crate::{bpf::SUPPORTED_EVENTS, cmd::is_root, Error};
 
-pub fn run(_verbose: bool) -> Result<(), Error> {
+pub fn run() -> Result<(), Error> {
     is_root()?;
 
-    println!("Currently available Kernel trace events:");
+    // debugfs path.
+    let debugfs = PathBuf::from("/sys/kernel/debug/tracing/events");
 
-    println!(
-        "- sys_enter: {}",
-        Path::new("/sys/kernel/debug/tracing/events/raw_syscalls/sys_enter").is_dir()
-    );
+    println!("Currently supported Kernel tracing events:");
+    SUPPORTED_EVENTS.iter().for_each(|event| {
+        let event_path = PathBuf::from(&debugfs).join(event.replace(":", "/"));
+        if Path::new(event_path.as_path()).is_dir() {
+            println!("- {}", event);
+        }
+    });
 
     Ok(())
 }

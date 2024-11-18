@@ -82,8 +82,7 @@ mod tests {
             metrics_addr = "localhost:9090"
 
             [tracing]
-            interval = 10
-            events = []
+            raw_syscalls = []
         "#;
 
         let err = Config::parse(toml_str).unwrap_err();
@@ -98,13 +97,13 @@ mod tests {
             [tracing]
             debug = true
             interval = 10
-            events = ["sys_enter"]
+            raw_syscalls = ["sys_enter"]
         "#;
 
         let config = Config::parse(toml_str).unwrap();
         assert_eq!(&config.metrics_addr, "localhost:9090");
         assert!(&config.tracing.debug);
         assert_eq!(config.tracing.interval, Duration::from_secs(10));
-        assert_eq!(&config.tracing.events, &["sys_enter"]);
+        assert_eq!(&config.tracing.raw_syscalls, &["sys_enter"]);
     }
 }

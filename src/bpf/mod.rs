@@ -9,6 +9,9 @@ use crate::{config::Tracing, ProgramError};
 pub(crate) mod ffi;
 mod raw_syscalls;
 
+/// List of curentlt support Kernel tracing events found in `/sys/kernel/debug/tracing/events/`
+pub const SUPPORTED_EVENTS: &[&str] = &["raw_syscalls:sys_enter"];
+
 /// Represents a runnable BPF program that omits metrics.
 pub trait Program: Send + Sync {
     /// Returns a new [`Program`] object.
@@ -62,7 +65,7 @@ mod tests {
         let config = Tracing {
             debug: true,
             interval: Duration::from_secs(10),
-            events: vec![],
+            raw_syscalls: vec![],
         };
         let progam_options = ProgramOptions::from(&config);
         assert!(progam_options.debug);

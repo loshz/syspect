@@ -22,8 +22,8 @@ pub struct Tracing {
     #[serde(deserialize_with = "deserialize_duration_seconds")]
     pub interval: Duration,
 
-    /// List of raw_syscall events: `/sys/kernel/debug/tracing/events/raw_syscalls`
-    pub raw_syscalls: Vec<String>,
+    /// List of raw_syscall events: `/sys/kernel/debug/tracing/events/events`
+    pub events: Vec<String>,
 }
 
 impl Config {
@@ -42,7 +42,7 @@ impl Config {
 
         // Check events have been registered.
         // TODO: use a default list?
-        if config.tracing.raw_syscalls.is_empty() {
+        if config.tracing.events.is_empty() {
             return Err(Error::Config("no tracing events specified".into()));
         }
 
@@ -82,7 +82,7 @@ mod tests {
             metrics_addr = "localhost:9090"
 
             [tracing]
-            raw_syscalls = []
+            events = []
         "#;
 
         let err = Config::parse(toml_str).unwrap_err();
@@ -97,13 +97,13 @@ mod tests {
             [tracing]
             debug = true
             interval = 10
-            raw_syscalls = ["sys_enter"]
+            events = ["raw_syscalls:sys_enter"]
         "#;
 
         let config = Config::parse(toml_str).unwrap();
         assert_eq!(&config.metrics_addr, "localhost:9090");
         assert!(&config.tracing.debug);
         assert_eq!(config.tracing.interval, Duration::from_secs(10));
-        assert_eq!(&config.tracing.raw_syscalls, &["sys_enter"]);
+        assert_eq!(&config.tracing.events, &["raw_syscalls:sys_enter"]);
     }
 }

@@ -65,7 +65,7 @@ mod tests {
         let config = Tracing {
             debug: true,
             interval: Duration::from_secs(10),
-            raw_syscalls: vec![],
+            events: vec![],
         };
         let progam_options = ProgramOptions::from(&config);
         assert!(progam_options.debug);

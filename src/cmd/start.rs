@@ -41,7 +41,7 @@ pub fn run(config_path: &str) -> Result<(), Error> {
     // Parse trace events and start individual bpf programs.
     let join_handles: Vec<_> = c
         .tracing
-        .raw_syscalls
+        .events
         .iter()
         .filter_map(|event| match Box::<dyn Program>::from_str(event) {
             Ok(program) => {

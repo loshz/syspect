@@ -22,7 +22,7 @@ pub struct Tracing {
     #[serde(deserialize_with = "deserialize_duration_seconds")]
     pub interval: Duration,
 
-    /// List of raw_syscall events: `/sys/kernel/debug/tracing/events/events`
+    /// List of enabled Kernel tracing events found in /sys/kernel/debug/tracing/events
     pub events: Vec<String>,
 }
 

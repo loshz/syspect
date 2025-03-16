@@ -1,5 +1,5 @@
 # syspect - Linux eBPF Monitoring Daemon
-[![builds.sr.ht status](https://builds.sr.ht/~loshz/syspect.svg)](https://builds.sr.ht/~loshz/syspect?) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![GPL-3.0 licensed](https://img.shields.io/badge/license-GPL--3.0-blue)](bpf/LICENSE)
+[![Build Status](https://github.com/loshz/syspect/workflows/ci/badge.svg)](https://github.com/loshz/syspect/actions) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![GPL-3.0 licensed](https://img.shields.io/badge/license-GPL--3.0-blue)](bpf/LICENSE)
 
 A Linux service that monitors systems via eBPF and exports data to Prometheus.
 
@@ -13,7 +13,7 @@ Usage: syspect <COMMAND>
 Commands:
   install    Install default config and systemd service files
   start      Start the daemon and expose a local metrics HTTP endpoint
-  events     List currently available Kernel trace events
+  events     List currently supported Kernel tracing events
   uninstall  Remove config and systemd service files
 
 Options:

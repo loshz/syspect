@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+    tags: ["*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      # Run linters.
+      - run: |
+          cargo fmt -- --check
+          cargo clippy --examples --tests -- --no-deps -D warnings
+
+      # Run all tests.
+      - run: cargo test --no-fail-fast --all-features

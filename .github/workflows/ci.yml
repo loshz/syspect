@@ -16,6 +16,9 @@ jobs:
         with:
           components: rustfmt, clippy
 
+      # Install deps.
+      - run: sudo apt update -y && sudo apt install clang-19 libelf-dev
+
       # Run linters.
       - run: |
           cargo fmt -- --check
